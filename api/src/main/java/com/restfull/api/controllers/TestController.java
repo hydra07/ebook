@@ -1,27 +1,20 @@
 package com.restfull.api.controllers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.restfull.api.dtos.HeaderRequestDTO;
+import com.restfull.api.dtos.book.BookDTO;
+import com.restfull.api.dtos.book.TypeDTO;
+import com.restfull.api.dtos.user.UserResponseDTO;
+import com.restfull.api.entities.Book;
+import com.restfull.api.entities.Type;
+import com.restfull.api.entities.User;
+import com.restfull.api.services.*;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.restfull.api.dtos.HeaderRequestDTO;
-import com.restfull.api.dtos.book.BookDTO;
-import com.restfull.api.dtos.book.TypeDTO;
-import com.restfull.api.dtos.user.UserDTO;
-import com.restfull.api.entities.Book;
-import com.restfull.api.entities.Type;
-import com.restfull.api.entities.User;
-import com.restfull.api.services.BookService;
-import com.restfull.api.services.FollowService;
-//import com.restfull.api.services.ImageService;
-import com.restfull.api.services.JwtService;
-import com.restfull.api.services.TypeService;
-import com.restfull.api.services.UserService;
-
-import io.jsonwebtoken.Claims;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/test")
@@ -41,9 +34,6 @@ public class TestController {
 
     @Autowired
     private TypeService typeService;
-
-//    @Autowired
-//    private ImageService imageService;
 
     // check connection
     @GetMapping("/ok")
@@ -75,10 +65,10 @@ public class TestController {
     }
 
     @GetMapping("/token/user")
-    public ResponseEntity<UserDTO> claimsUser(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<UserResponseDTO> claimsUser(@RequestHeader("Authorization") String token) {
         // if (token != null && token.startsWith("Bearer ")) token = token.substring(7);
         token = jwtService.validateRequestHeader(token);
-        return ResponseEntity.ok(new UserDTO(jwtService.getUser(token)));
+        return ResponseEntity.ok(new UserResponseDTO(jwtService.getUser(token)));
     }
 
 //    @PostMapping("/token/profile")
@@ -200,6 +190,7 @@ public class TestController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     @PostMapping("/token/unFollowBook")
     public ResponseEntity<?> unfollowBook(@RequestHeader("Authorization") String token, @RequestBody BookDTO bookDTO) {
         try {

@@ -1,6 +1,7 @@
 package com.restfull.api.dtos.auth;
 
-import com.restfull.api.dtos.user.UserDTO;
+
+import com.restfull.api.dtos.user.UserResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,5 +12,5 @@ import lombok.Setter;
 public class AuthDTO {
     private String token;
     private String message;
-    private UserDTO user;
+    private UserResponseDTO user;
 }

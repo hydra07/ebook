@@ -1,13 +1,12 @@
 package com.restfull.api.services;
 
-import com.restfull.api.dtos.user.UserDTO;
+
 import com.restfull.api.entities.User;
 import com.restfull.api.enums.Role;
 import com.restfull.api.repositories.UserRepository;
 import com.restfull.api.utils.DuplicationException;
 import com.restfull.api.utils.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -54,7 +53,7 @@ public class UserService {
         return repository.save(_user);
     }
 
-    public User updatePassword(User user){
+    public User updatePassword(User user) {
         User _user = findByEmail(user.getEmail());
         _user.setPassword(user.getPassword());
         return repository.save(_user);

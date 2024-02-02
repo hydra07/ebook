@@ -1,8 +1,8 @@
 package com.restfull.api.services;
 
 import com.restfull.api.dtos.auth.*;
-import com.restfull.api.dtos.user.UserDTO;
 import com.restfull.api.dtos.user.UserResetPasswordDTO;
+import com.restfull.api.dtos.user.UserResponseDTO;
 import com.restfull.api.entities.User;
 import com.restfull.api.utils.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class AuthService {
     public AuthDTO login(AuthRequestDTO dto) {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(dto.getEmail(), dto.getPassword()));
         final User user = userService.findByEmail(dto.getEmail());
-        return new AuthDTO(jwtService.generateToken(user.getEmail()), "Authenticated successfully", new UserDTO(user));
+        return new AuthDTO(jwtService.generateToken(user.getEmail()), "Authenticated successfully", new UserResponseDTO(user));
     }
 
     public AuthResponseDTO authenticateGoogle(GoogleRequestDTO dto) {

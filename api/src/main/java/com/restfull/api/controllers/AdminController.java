@@ -1,6 +1,7 @@
 package com.restfull.api.controllers;
 
-import com.restfull.api.dtos.user.UserDTO;
+
+import com.restfull.api.dtos.user.UserResponseDTO;
 import com.restfull.api.entities.User;
 import com.restfull.api.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,9 @@ public class AdminController {
     private PasswordEncoder passwordEncoder;
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<UserDTO>> findAll() {
+    public ResponseEntity<?> findAll() {
         final List<User> users = service.findAll();
-        final List<UserDTO> dtos = users.stream().map(UserDTO::new).toList();
+        final List<UserResponseDTO> dtos = users.stream().map(UserResponseDTO::new).toList();
         return ResponseEntity.ok(dtos);
     }
 
