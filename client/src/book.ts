@@ -1,3 +1,5 @@
+import unidecode from "unidecode";
+
 export type Book = {
   id: number;
   title: string;
@@ -157,7 +159,7 @@ const books = [
   },
   {
     id: 10,
-    title: 'Bí mật của tâm hồn',
+    title: 'Bí mật của tâm hồn 1',
     description:
       'Bí mật của tâm hồn của Gary Chapman là một hành trình khám phá về tình yêu và mối quan hệ. Tác giả giới thiệu về "Ngôn ngữ tình yêu" và cách hiểu biết ngôn ngữ này có thể làm cho mối quan hệ trở nên sâu sắc và ý nghĩa hơn.',
     price: 88,
@@ -173,7 +175,7 @@ const books = [
   },
   {
     id: 11,
-    title: 'Bí mật của tâm hồn',
+    title: 'Bí mật của tâm hồn 2',
     description:
       'Bí mật của tâm hồn của Gary Chapman là một hành trình khám phá về tình yêu và mối quan hệ. Tác giả giới thiệu về "Ngôn ngữ tình yêu" và cách hiểu biết ngôn ngữ này có thể làm cho mối quan hệ trở nên sâu sắc và ý nghĩa hơn.',
     price: 88,
@@ -189,7 +191,7 @@ const books = [
   },
   {
     id: 12,
-    title: 'Bí mật của tâm hồn',
+    title: 'Bí mật của tâm hồn 3',
     description:
       'Bí mật của tâm hồn của Gary Chapman là một hành trình khám phá về tình yêu và mối quan hệ. Tác giả giới thiệu về "Ngôn ngữ tình yêu" và cách hiểu biết ngôn ngữ này có thể làm cho mối quan hệ trở nên sâu sắc và ý nghĩa hơn.',
     price: 88,
@@ -205,7 +207,7 @@ const books = [
   },
   {
     id: 13,
-    title: 'Bí mật của tâm hồn',
+    title: 'Bí mật của tâm hồn 4',
     description:
       'Bí mật của tâm hồn của Gary Chapman là một hành trình khám phá về tình yêu và mối quan hệ. Tác giả giới thiệu về "Ngôn ngữ tình yêu" và cách hiểu biết ngôn ngữ này có thể làm cho mối quan hệ trở nên sâu sắc và ý nghĩa hơn.',
     price: 88,
@@ -269,19 +271,38 @@ const books = [
   },
 ];
 
-function getListBookByType(books:Book[], type:string) {
+function getListBookByType(books: Book[], type: string) {
   return books.filter((book) => book.types.includes(type));
 }
-function getAllBookTypes(books:Book[]) {
-  const types = books.reduce((acc:string[], book) => {
+function getAllBookTypes(books: Book[]) {
+  const types = books.reduce((acc: string[], book) => {
     return [...acc, ...book.types];
   }, []);
 
   // return [...new Set(types)];
   return Array.from(new Set(types));
 }
-function getBookById(books:Book[], id:number) {
+function getBookById(books: Book[], id: number) {
   return books.find((book) => book.id == id);
 }
+
+function getBookByStandardizationTitle(title: string, books: Book[]): Book | null {
+  const result: Book | undefined = books.find((book) => {
+    const titleBookStandar = unidecode(book.title.toLowerCase()).replace(/\s+/g, '-');
+    if (title === titleBookStandar) {
+      // console.log(`book la ${JSON.stringify(book)}`);
+      return true;
+    }
+    return false;
+  });
+  return result || null;
+  // throw Error('khong tim thay sach');
+}
+function getStandardizationTitle(book: Book) {
+  const title: string = book.title;
+  return unidecode(title).toLowerCase().replace(/\s+/g, '-');
+}
+
+
 export default books;
-export { getAllBookTypes, getBookById, getListBookByType };
+export { getAllBookTypes, getBookById, getListBookByType, getBookByStandardizationTitle, getStandardizationTitle };

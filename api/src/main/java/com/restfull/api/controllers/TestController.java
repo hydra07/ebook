@@ -16,7 +16,7 @@ import com.restfull.api.entities.Type;
 import com.restfull.api.entities.User;
 import com.restfull.api.services.BookService;
 import com.restfull.api.services.FollowService;
-import com.restfull.api.services.ImageService;
+//import com.restfull.api.services.ImageService;
 import com.restfull.api.services.JwtService;
 import com.restfull.api.services.TypeService;
 import com.restfull.api.services.UserService;
@@ -42,8 +42,8 @@ public class TestController {
     @Autowired
     private TypeService typeService;
 
-    @Autowired
-    private ImageService imageService;
+//    @Autowired
+//    private ImageService imageService;
 
     // check connection
     @GetMapping("/ok")
@@ -157,16 +157,16 @@ public class TestController {
         }
     }
 
-    @PostMapping("/token/addBook")
-    public ResponseEntity<String> addBook(@RequestBody BookDTO bookDTO) {
-        System.out.println(bookDTO);
-        try {
-            bookService.createBook(bookDTO);
-            return ResponseEntity.ok("Book added!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+//    @PostMapping("/token/addBook")
+//    public ResponseEntity<String> addBook(@RequestBody BookDTO bookDTO) {
+//        System.out.println(bookDTO);
+//        try {
+//            bookService.createBook(bookDTO);
+//            return ResponseEntity.ok("Book added!");
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
     @GetMapping("/token/getBook")
     public ResponseEntity<?> getBook() {

@@ -45,7 +45,7 @@ export const authOptions: NextAuthOptions = {
       try {
         const res = await axios.post(`/auth/google`, user);
         if (res.data) {
-          console.log('res.data ', JSON.stringify(res.data));
+          // console.log('res.data ', JSON.stringify(res.data));
           (user as any).token = res.data.token;
           return true;
         } else {
@@ -71,7 +71,7 @@ export const authOptions: NextAuthOptions = {
       // session.user.name = (token.user as any).name as string;
       // session.user.image = (token.user as any).avatar as string;
       // session.user.gender = (token.user as any).gender as boolean;
-      console.log(`[3]day la session ${JSON.stringify(session)}`);
+      // console.log(`[3]day la session ${JSON.stringify(session)}`);
       return session;
     },
   },

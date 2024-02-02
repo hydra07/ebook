@@ -67,7 +67,7 @@ public class User implements Serializable, UserDetails {
     @Setter
     @Getter
     @Column(nullable = true, length = 1)
-    private boolean gender;
+    private boolean gender;//true là nam, false là nữ
 
     @Setter
     @Getter
@@ -122,11 +122,6 @@ public class User implements Serializable, UserDetails {
         this(dto.getName(), dto.getEmail(), dto.getPassword(), dto.getPhone(), dto.getAvatar(), dto.getGender());
         this.setId(dto.getId());
         // this.setStringRoles(dto.getRoles());
-    }
-
-    // -----------------FOLLOW BOOK---------------------------------------------------------------------------------------
-    public Set<String>  getBooksString(){
-        return this.followedBooks.stream().map(Book::getTitle).collect(Collectors.toSet());
     }
     // -----------------ROLE-----------------------------------------------------------------------------------------------
     public Set<Role> getRoles() {

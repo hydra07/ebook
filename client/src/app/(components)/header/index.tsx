@@ -29,7 +29,7 @@ export default () => {
 
   return (
     <header
-      className={`w-full py-[11px] fixed top-0 left-0 z-50 bg-black 
+      className={`w-full py-[11px] fixed top-0 left-0 z-50 bg-black border-b border-gray-800 shadow-lg
       ${isAtTop ? 'bg-opacity-20' : 'bg-opacity-70'}
       `}
     >

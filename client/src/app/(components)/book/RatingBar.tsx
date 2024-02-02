@@ -5,8 +5,10 @@ export default () => {
   const [reviewer, setReviewer] = useState(200);
   return (
     <div>
-      <div className="flex items-center gap-2 font-bold text-blue-gray-500">
-        {rated}.7
+      <div className="flex flex-row items-center gap-2 font-bold text-gray-400">
+        <div className=''>
+          {rated}.7   
+        </div>
         <Rating
           value={4}
           onChange={(value) => setRated(value)}
@@ -14,7 +16,7 @@ export default () => {
         />
         <Typography
           color="blue-gray"
-          className="font-medium text-blue-gray-500"
+          className="font-medium text-gray-400"
           placeholder={null}
           children={`Based on ${reviewer} Reviews`}
         ></Typography>
