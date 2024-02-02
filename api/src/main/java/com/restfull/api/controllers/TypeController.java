@@ -25,9 +25,7 @@ public class TypeController {
 
     @GetMapping("/getList")
     public ResponseEntity<?> getList() {
-        return ResponseEntity.ok(typeService.getAllTypes().stream().map(
-                Type::getName
-        ).collect(Collectors.toList()));
+        return ResponseEntity.ok(typeService.getAllTypes().stream().map(Type::getName).collect(Collectors.toList()));
     }
 
 }

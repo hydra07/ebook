@@ -81,61 +81,61 @@ public class TestController {
         return ResponseEntity.ok(new UserDTO(jwtService.getUser(token)));
     }
 
-    @PostMapping("/token/profile")
-    public ResponseEntity<String> editProfile(@RequestBody UserDTO userDTO) {
-        try {
-            String phone = userDTO.getPhone();
-            if (phone.length() != 10)
-                return ResponseEntity.badRequest().body("Phone number must be 10 digits");
-            User user = new User(userDTO);
-            userService.update(user);
-            return ResponseEntity.ok("Profile edited!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+//    @PostMapping("/token/profile")
+//    public ResponseEntity<String> editProfile(@RequestBody UserDTO userDTO) {
+//        try {
+//            String phone = userDTO.getPhone();
+//            if (phone.length() != 10)
+//                return ResponseEntity.badRequest().body("Phone number must be 10 digits");
+//            User user = new User(userDTO);
+//            userService.update(user);
+//            return ResponseEntity.ok("Profile edited!");
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
-    @PostMapping("/token/addFollow")
-    public ResponseEntity<String> addFollow(@RequestHeader("Authorization") String token,
-            @RequestBody UserDTO userDTO) {
-        try {
-            token = jwtService.validateRequestHeader(token);
-            User user = jwtService.getUser(token);
-            User _user = new User(userDTO);
-            followService.follow(user, _user);
-            // System.out.println(followService.isFollowing(user.getId(), _user.getId()));
-            return ResponseEntity.ok("Follower added!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+//    @PostMapping("/token/addFollow")
+//    public ResponseEntity<String> addFollow(@RequestHeader("Authorization") String token,
+//            @RequestBody UserDTO userDTO) {
+//        try {
+//            token = jwtService.validateRequestHeader(token);
+//            User user = jwtService.getUser(token);
+//            User _user = new User(userDTO);
+//            followService.follow(user, _user);
+//            // System.out.println(followService.isFollowing(user.getId(), _user.getId()));
+//            return ResponseEntity.ok("Follower added!");
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
-    @PostMapping("/token/unFollow")
-    public ResponseEntity<String> unFollow(@RequestHeader("Authorization") String token, @RequestBody UserDTO userDTO) {
-        try {
-            token = jwtService.validateRequestHeader(token);
-            User user = jwtService.getUser(token);
-            User _user = new User(userDTO);
-            followService.unfollow(user, _user);
-            // System.out.println(followService.isFollowing(user.getId(), _user.getId()));
-            return ResponseEntity.ok("Follower removed!");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
+//    @PostMapping("/token/unFollow")
+//    public ResponseEntity<String> unFollow(@RequestHeader("Authorization") String token, @RequestBody UserDTO userDTO) {
+//        try {
+//            token = jwtService.validateRequestHeader(token);
+//            User user = jwtService.getUser(token);
+//            User _user = new User(userDTO);
+//            followService.unfollow(user, _user);
+//            // System.out.println(followService.isFollowing(user.getId(), _user.getId()));
+//            return ResponseEntity.ok("Follower removed!");
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(e.getMessage());
+//        }
+//    }
 
-    @GetMapping("/token/getFollower")
-    public ResponseEntity<List<UserDTO>> getFollowers(@RequestHeader("Authorization") String token) {
-        try {
-            token = jwtService.validateRequestHeader(token);
-            User user = jwtService.getUser(token);
-            List<User> followers = followService.findAllFollowersByUserId(user.getId());
-
-            return ResponseEntity.ok(followers.stream().map(UserDTO::new).collect(Collectors.toList()));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(null);
-        }
-    }
+//    @GetMapping("/token/getFollower")
+//    public ResponseEntity<List<UserDTO>> getFollowers(@RequestHeader("Authorization") String token) {
+//        try {
+//            token = jwtService.validateRequestHeader(token);
+//            User user = jwtService.getUser(token);
+//            List<User> followers = followService.findAllFollowersByUserId(user.getId());
+//
+//            return ResponseEntity.ok(followers.stream().map(UserDTO::new).collect(Collectors.toList()));
+//        } catch (Exception e) {
+//            return ResponseEntity.badRequest().body(null);
+//        }
+//    }
 
     @PostMapping("/token/addType")
     public ResponseEntity<?> addType(@RequestBody TypeDTO typeDTO) {

@@ -1,14 +1,13 @@
 package com.restfull.api.controllers;
 
 import com.restfull.api.dtos.auth.*;
+import com.restfull.api.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.restfull.api.services.AuthService;
 
 @RestController
 @RequestMapping("/auth")
@@ -34,7 +33,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<AuthDTO> login(@RequestBody AuthRequestDTO dto){
+    public ResponseEntity<AuthDTO> login(@RequestBody AuthRequestDTO dto) {
         return ResponseEntity.ok(authService.login(dto));
     }
 }

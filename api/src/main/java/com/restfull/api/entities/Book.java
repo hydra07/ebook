@@ -22,11 +22,10 @@ import java.util.stream.Collectors;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Book {
     @Id
-    // @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
-    // "gen_books_id")
-    // @SequenceGenerator(name = "gen_books_id", sequenceName = "seq_books_id",
-    // allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
+            "gen_books_id")
+    @SequenceGenerator(name = "gen_books_id", sequenceName = "seq_books_id",
+            allocationSize = 1)
     private Long id;
 
     @Column(nullable = false, length = 250, columnDefinition = "NVARCHAR(250)")
@@ -55,7 +54,7 @@ public class Book {
     private Double price = 0.0;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "followBook", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
+    @JoinTable(name = "follow_book", joinColumns = @JoinColumn(name = "book_id"), inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> followedBook = new HashSet<>();
 
     @Enumerated(EnumType.STRING)

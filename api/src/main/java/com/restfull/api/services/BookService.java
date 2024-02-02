@@ -3,7 +3,6 @@ package com.restfull.api.services;
 
 import com.restfull.api.dtos.book.BookRequestDTO;
 import com.restfull.api.entities.Book;
-import com.restfull.api.entities.Type;
 import com.restfull.api.entities.User;
 import com.restfull.api.enums.Status;
 import com.restfull.api.repositories.BookRepository;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,8 +34,7 @@ public class BookService {
     }
 
     public Book findById(Long id) {
-        return repository.findById(id).orElseThrow(
-                () -> new NotFoundException("Book not found: " + id));
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("Book not found: " + id));
     }
 
     public Book create(Book book) {
@@ -50,9 +47,7 @@ public class BookService {
         _book.setTitle(bookDto.getTitle());
         _book.setAuthor(authorService.findById(bookDto.getAuthorId()));
         _book.setDescription(bookDto.getDescription());
-        _book.setTypes(bookDto.getTypesId().stream().map(
-                id -> typeService.getTypeById(id)
-        ).collect(Collectors.toSet()));
+        _book.setTypes(bookDto.getTypesId().stream().map(id -> typeService.getTypeById(id)).collect(Collectors.toSet()));
         _book.setPrice(bookDto.getPrice());
         _book.setCreatedAt(bookDto.getCreatedAt());
         _book.setLastUpdateAt(bookDto.getLastUpdateAt());
