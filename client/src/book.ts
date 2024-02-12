@@ -304,5 +304,5 @@ function getStandardizationTitle(book: Book) {
 }
 
 
-export default books;
+// export default books;
 export { getAllBookTypes, getBookById, getListBookByType, getBookByStandardizationTitle, getStandardizationTitle };

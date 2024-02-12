@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import AuthButton from './AuthButton';
 import Search from './Search';
 import User from './User';
+import TypeButton from './TypeButton';
 export default () => {
   const [isAtTop, setIsAtTop] = useState(true);
   const { data: session } = useSession();
@@ -49,11 +50,12 @@ export default () => {
                   Sách
                 </a>
               </div>
-              <div className="py-2.5">
+              {/*<div className="py-2.5">
                 <a href="/" className="text-white">
                   Thể loại
                 </a>
-              </div>
+              </div>*/}
+              <TypeButton />
             </div>
           </div>
 

@@ -1,4 +1,5 @@
-import { Book } from "@/book";
+'use client';
+import Book from "@/types/book";
 import { Breadcrumbs } from "@material-tailwind/react";
 import Link from "next/link";
 export default ({ book }: { book: Book }) => {
@@ -18,8 +19,8 @@ export default ({ book }: { book: Book }) => {
 					</div>
 					
 				</Link>
-				{book.types.map((type, index) => (
-					<Link href='/' className="opacity-70 text-white hover:opacity-100" children={type} key={type}></Link>
+				{book.types!.map((type, index) => (
+					<Link href='/' className="opacity-70 text-white hover:opacity-100" children={type.name} key={type.name}></Link>
 				))}
 				<Link href='/' className="text-white">{book.title}</Link>
 				{/*<a href="#" className='text-white'>Breadcrumbs</a>*/}

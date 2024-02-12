@@ -1,11 +1,14 @@
-import { Book } from '@/book';
+// import { Book } from '@/book';
+ import Book from '@/types/book';
 import { Tooltip } from '@material-tailwind/react';
 import { ReactElement } from 'react';
-import { getStandardizationTitle } from '@/book';
+// import { getStandardizationTitle } from '@/book';
+import { getStandardizationTitle } from '@/utils/sort'
 import RatingBar from '../book/RatingBar';
 export default ({ book }: { book: Book }) => {
   const handleClick = () => {
-    window.location.href = `/bookdetail/${getStandardizationTitle(book)}`;
+    // window.location.href = `/bookdetail/${getStandardizationTitle(book)}`;
+    window.location.href = `/bookdetail/${book.id}`;
   };
   const details: ReactElement = (
     <div className="w-[600px] h-[320px] relative bg-fixed rounded-lg backdrop-blur-3xl backdrop-filter bg-opacity-90 bg-black ">
@@ -41,12 +44,12 @@ export default ({ book }: { book: Book }) => {
           <div className="w-[200px] h-[300px]">
             <img
               className="object-cover rounded-md"
-              src={book.images[0]}
+              src={book.imageUrl as string}
               alt={book.title}
             />
           </div>
         </Tooltip>
-        <div className="text-white text-md pt-3 fixed">{book.title}</div>
+        <div className="text-white text-md pt-3">{book.title}</div>
       </div>
     </div>
   );

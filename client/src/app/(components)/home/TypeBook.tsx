@@ -6,7 +6,8 @@ import 'swiper/css/scrollbar';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
 // import { Navigation, Pagination, Scrollbar, A11y, EffectCube } from 'swiper';
-import { Book } from '@/book';
+// import { Book } from '@/book';
+ import Book from '@/types/book';
 import { register } from 'swiper/element/bundle';
 import { A11y, Navigation, Pagination, Scrollbar } from 'swiper/modules';
 // import 'swiper/swiper-bundle.min.css';
@@ -22,8 +23,8 @@ export default ({ type, books }: { type: string; books: Book[] }) => {
         navigation
         // pagination={{ clickable: true }}
         // scrollbar={{ draggable: true }}
-        onSlideChange={() => console.log('slide change')}
-        onSwiper={(swiper) => console.log(swiper)}
+        onSlideChange={() => {}}
+        onSwiper={(swiper) => {}}
         // effect={''}
         // cubeEffect={{
         //   shadow: true,

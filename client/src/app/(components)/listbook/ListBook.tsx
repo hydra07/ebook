@@ -1,11 +1,11 @@
 'use client';
 // import Book from "@/server/models/book.model";
- import { Book } from "@/book";
+import { Book } from "@/book";
 import BookCard from "../home/BookCard";
-export default ({books}:{books:Book[]}) => {
+export default ({ books }: { books: Book[] }) => {
 	return (
 		<div>
-			{books.map((book,index)=>(
+			{books.map((book, index) => (
 				<BookCard key={book.title} book={book} />
 			))}
 		</div>

@@ -1,26 +1,24 @@
-'use client';
-import { useState } from 'react';
-import books, { Book, getAllBookTypes, getListBookByType } from '../book';
-import TypeBook from './(components)/home/TypeBook';
-const HomePage = () => {
-  const [listBook, setListBook] = useState<Book[]>(books);
-  const [listBookType, setListBookType] = useState(getAllBookTypes(listBook));
+// 'use client';
+import axios from '@/lib/axios';
+import Home from './(components)/home';
+// import { fetchBooks } from '@/lib/store/bookSlice';
+// export async function getStaticProps(){
+//   const res = await axios.get(`/book/getAll`)
+//   const books = res.data;
+//   return {
+//     props: {
+//       books,
+//     }
+//   }
+// } 
+const HomePage = async () => {
+  const res = await axios.get(`/book/getAll`)
+  const listBook = res.data
+  console.log('from page.tsx')
   return (
     <div>
-      <div className="h-auto w-screen">
-        <div className="pt-20">
-          {listBookType.map((type) => {
-            return (
-              <TypeBook
-                type={type}
-                books={getListBookByType(listBook, type)}
-                key={type}
-              />
-            );
-          })}
-        </div>
-      </div>
+      <Home listBook={listBook ? listBook : []} />
     </div>
-  );
+  )
 };
 export default HomePage;

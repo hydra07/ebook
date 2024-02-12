@@ -1,8 +1,11 @@
+'use client';
+import Book from '@/types/book';
 import { Rating, Typography } from '@material-tailwind/react';
 import { useState } from 'react';
-export default () => {
+export default ({book}:{book:Book}) => {
+  const [rating,setRating] = useState<number>(book.rating!);
   const [rated, setRated] = useState(0);
-  const [reviewer, setReviewer] = useState(200);
+  const [reviewer, setReviewer] = useState(book.reviews);
   return (
     <div>
       <div className="flex flex-row items-center gap-2 font-bold text-gray-400">
@@ -10,7 +13,7 @@ export default () => {
           {rated}.7   
         </div>
         <Rating
-          value={4}
+          value={Math.round(rating)}
           onChange={(value) => setRated(value)}
           placeholder={null}
         />
