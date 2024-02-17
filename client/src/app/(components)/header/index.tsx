@@ -1,17 +1,13 @@
 'use client';
-import { useSession } from 'next-auth/react';
+import useUser from '@/lib/hooks/useUser';
 import { useEffect, useState } from 'react';
 import AuthButton from './AuthButton';
 import Search from './Search';
-import User from './User';
 import TypeButton from './TypeButton';
+import UserAvatar from './UserAvatar';
 export default () => {
   const [isAtTop, setIsAtTop] = useState(true);
-  const { data: session } = useSession();
-  // const token = session?.user.accessToken;
-  const user = session?.user;
-  const token = user?.accessToken;
-  // const token = useSelector((state) => state.auth.token);
+  const { user, status } = useUser();
   const handleScroll = () => {
     const scrollY = window.scrollY;
     if (scrollY > 0) {
@@ -20,14 +16,12 @@ export default () => {
       setIsAtTop(true);
     }
   };
-
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
-
   return (
     <header
       className={`w-full py-[11px] fixed top-0 left-0 z-50 bg-black border-b border-gray-800 shadow-lg
@@ -47,22 +41,16 @@ export default () => {
             <div className="flex flex-1 gap-x-6 flex-wrap">
               <div className="py-2.5">
                 <a href="/" className="text-white">
-                  Sách
+                  Home
                 </a>
               </div>
-              {/*<div className="py-2.5">
-                <a href="/" className="text-white">
-                  Thể loại
-                </a>
-              </div>*/}
               <TypeButton />
             </div>
           </div>
 
           <div className="flex gap-6 h-fit items-center whitespace-nowrap">
             <Search />
-            {/* <AuthButton /> */}
-            {!token ? <AuthButton /> : <User user={user} />}
+            {user ? <UserAvatar user={user} /> : <AuthButton />}
           </div>
         </div>
       </div>

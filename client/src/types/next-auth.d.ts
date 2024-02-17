@@ -11,6 +11,7 @@ declare module "next-auth" {
       name: string;
       image: string;
       gender: boolean;
+      phone:string;
       accessToken: string;
       // refreshToken: string;
     }

@@ -7,7 +7,7 @@ import Google from './Google';
 // import { useDispatch } from 'react-redux';
 // import { login } from '../../store/auth';
 // import Google from '../auth/Google';
-
+// eslint-disable-next-line react/display-name,import/no-anonymous-default-export
 export default ({ setShowSignUpDialog, setShowSignInDialog }: ShowDiaLog) => {
   const [form, setForm] = useState({
     email: '',
@@ -20,8 +20,6 @@ export default ({ setShowSignUpDialog, setShowSignInDialog }: ShowDiaLog) => {
   };
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // dispatch(login(form));
-
     await signIn('credentials', {
       email: form.email,
       password: form.password,

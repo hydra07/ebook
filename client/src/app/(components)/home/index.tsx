@@ -1,7 +1,7 @@
 'use client';
 import Book, { Type } from "@/types/book";
 import TypeBook from "./TypeBook";
-import { getAllTypesFromBooks, getBookByType } from '@/utils/sort';
+import { getAllTypesFromBooks, getBookByType } from '@/utils/sort.utils';
 import { useState } from "react";
 export default ({ listBook }: { listBook: Book[] }) => {
 	const [books, setBooks] = useState<Book[]>(listBook);

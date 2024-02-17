@@ -1,6 +1,7 @@
 import unidecode from "unidecode";
 
-export type Book = {
+// export
+type Book = {
   id: number;
   title: string;
   description: string;

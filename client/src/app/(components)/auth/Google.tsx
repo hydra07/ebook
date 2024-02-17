@@ -1,8 +1,9 @@
 import { signIn } from 'next-auth/react';
-
+import Image from 'next/image';
+// eslint-disable-next-line react/display-name,import/no-anonymous-default-export
 export default () => {
   // const dispatch = useDispatch();
-  const hanldeGoogleClick = async () => {
+  const handleGoogleClick = async () => {
     try {
       // const provider = new GoogleAuthProvider();
       // const auth = getAuth(app);
@@ -14,7 +15,7 @@ export default () => {
       //   avatar: result.user.photoURL,
       // };
       // dispatch(google(data));
-      signIn('google', {
+      await signIn('google', {
         callbackUrl: '/profile',
       });
     } catch (error) {
@@ -24,14 +25,14 @@ export default () => {
   return (
     <button
       className="border border-white py-2 px-4 rounded-full text-white whitespace-nowrap"
-      onClick={hanldeGoogleClick}
+      onClick={handleGoogleClick}
     >
       <span className="flex">
-        <img
+        <Image
           src="/svg/google.svg"
           alt=""
-          width={'20px'}
-          height={'20px'}
+          width={'20'}
+          height={'20'}
           className="mr-3"
         />
         Google

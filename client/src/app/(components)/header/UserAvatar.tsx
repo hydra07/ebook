@@ -6,28 +6,14 @@ import {
   MenuList,
   Typography,
 } from '@material-tailwind/react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { logout } from '../../store/auth';
-// import { getUser } from '../../store/user';
-// import { useSession } from 'next-auth/react';
 import { signOut } from 'next-auth/react';
 export default ({ user }: any) => {
-  // const token = useSelector((state) => state.auth.token);
-  // const user = useSelector((state) => state.user);
-  // const dispatch = useDispatch();
   const handleLogout = () => {
     signOut({
       callbackUrl: '/',
     });
     // dispatch(logout());
   };
-  // useEffect(() => {
-  //   const fetchProfile = async () => {
-  //     // const action = await dispatch(getUser());
-  //   };
-  //   fetchProfile();
-  // }, []);
-
   return (
     <Menu>
       <MenuHandler>
@@ -35,7 +21,11 @@ export default ({ user }: any) => {
           <Avatar
             color="gray"
             size="md"
-            src={user.image}
+            src={
+              user.image
+                ? user.image
+                : `https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg`
+            }
             alt="User Avatar"
             placeholder={null}
           />
@@ -50,7 +40,7 @@ export default ({ user }: any) => {
         className="border-gray-400 bg-opacity-80 backdrop-blur-lg bg-black text-white"
         placeholder={null}
       >
-        <MenuItem color="lightBlue" placeholder={null}>
+        <MenuItem color="lightBlue" placeholder={null} onClick={() => {}}>
           Tài khoản
         </MenuItem>
         <MenuItem

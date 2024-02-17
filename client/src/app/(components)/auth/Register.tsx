@@ -6,6 +6,7 @@ import Google from './Google';
 // import { useDispatch } from 'react-redux';
 // import { register } from '../../store/auth';
 // import Google from './Google';
+// eslint-disable-next-line react/display-name,import/no-anonymous-default-export
 export default ({ setShowSignInDialog, setShowSignUpDialog }: ShowDiaLog) => {
   const [form, setForm] = useState({
     name: '',

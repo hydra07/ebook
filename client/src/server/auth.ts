@@ -1,7 +1,8 @@
-import axios from '@/lib/axios';
+import axios, { axiosWithAuth } from '@/lib/axios';
 import { NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
+
 export const authOptions: NextAuthOptions = {
   providers: [
     Google({
@@ -12,8 +13,6 @@ export const authOptions: NextAuthOptions = {
       name: 'Credentials',
       id: 'credentials',
       credentials: {
-        // email: { label: 'Email', type: 'text' },
-        // password: { label: 'Password', type: 'password' },
         email: {},
         password: {},
       },
@@ -24,11 +23,12 @@ export const authOptions: NextAuthOptions = {
             password: credentials?.password,
           };
           const res = await axios.post('/auth/login', _user);
-          // const { token, message, user } = res.data;
+          const { token, message, user } = res.data;
           // console.log(token);
           if (res.data) {
             // return { token, message };
             // return Promise.resolve({ token, message });
+            console.log('res.data ', JSON.stringify(res.data));
             return res.data;
             // return { id: token, name: message, email: credentials?.email };
           }
@@ -40,9 +40,9 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async signIn({ user }) {
-      // console.log('user ', user);
-      try {
+    async signIn({ account, user }) {
+      // console.log('account ', user);
+      if (account?.provider === 'google') {
         const res = await axios.post(`/auth/google`, user);
         if (res.data) {
           // console.log('res.data ', JSON.stringify(res.data));
@@ -51,26 +51,41 @@ export const authOptions: NextAuthOptions = {
         } else {
           return false;
         }
-      } catch (error) {
-        return false;
+      } else {
+        return true;
       }
     },
     async jwt({ token, user }) {
       if (user) {
-        // console.log(`[1]day la user ${JSON.stringify(user)}`);
         token.accessToken = (user as any).token;
+        // console.log(`${JSON.stringify(user)}`);
       }
       // console.log(`[2]day la token ${JSON.stringify(token)}`);
       return { ...token, ...user };
       // return token;
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       session.user.accessToken = token.accessToken as string;
-      // session.user.id = (token.user as any).id as number;
-      // session.user.email = (token.user as any).email as string;
-      // session.user.name = (token.user as any).name as string;
-      // session.user.image = (token.user as any).avatar as string;
-      // session.user.gender = (token.user as any).gender as boolean;
+      // console.log(`[-]day la user ${JSON.stringify(user)}`);
+      const getUser = await axiosWithAuth(session.user.accessToken).get(
+        `/user/getUser`,
+      );
+      const _user = await getUser.data;
+      session.user = {
+        ...session.user,
+        id: _user.id as number,
+        email: _user.email as string,
+        name: _user.name as string,
+        image: _user.image as string,
+        phone: _user.phone as string,
+        gender: _user.gender as boolean,
+      };
+
+      // session.user.id = _user.id as number;
+      // session.user.email = _user.email as string;
+      // session.user.name = _user.name as string;
+      // session.user.image = _user.image as string;
+      // session.user.gender = _user.gender as boolean;
       // console.log(`[3]day la session ${JSON.stringify(session)}`);
       return session;
     },
