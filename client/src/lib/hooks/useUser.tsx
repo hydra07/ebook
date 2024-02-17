@@ -4,7 +4,7 @@ import User from '@/types/user';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 
-export default () => {
+export default function useUser() {
   const { data: session, status } = useSession();
   const [user, setUser] = useState<User>();
   const setInfor = async () => {
@@ -25,4 +25,4 @@ export default () => {
     setInfor();
   }, [session?.user]);
   return { user, status };
-};
+}
