@@ -1,9 +1,10 @@
 'use client';
+import Image from 'next/image';
 import { useContext, useEffect } from 'react';
 import { readerContext } from './Reader';
-// import './contenview.less';
-import './contentview.css';
-
+/**
+ * @description: Content view
+ */
 export default function ContentView() {
   const context = useContext(readerContext);
   if (!context) return null;
@@ -34,26 +35,47 @@ export default function ContentView() {
 
     return offListenKeyup;
   }, [rendition.current]);
-
+  console.log(isPanelBar);
   return (
     <div
       className={
         isPanelBar
-          ? 'content-view content-view--withbar'
-          : 'content-view content-view--fullscreen'
+          ? 'flex w-screen h-[calc(100vh-48px)] overflow-x-hidden'
+          : 'flex w-screen h-screen overflow-x-hidden'
       }
     >
-      <div className="content-view__pagination" onClick={goPrevPage}>
-        {/* <ArrowBackIosIcon color={atStart ? 'disabled' : undefined}></ArrowBackIosIcon> */}
-        <button hidden={atStart ? true : false}>{'<'}</button>
+      <div
+        className="w-[100px] flex items-center justify-center transition-all duration-300 cursor-pointer select-none hover:bg-opacity-15 "
+        onClick={goPrevPage}
+      >
+        <button hidden={atStart ? true : false}>
+          <Image
+            className="transform hover:scale-125 transition-transform duration-150"
+            src="/svg/left-white.svg"
+            alt="arrow-left"
+            width={40}
+            height={40}
+          />
+        </button>
       </div>
       <div
-        className="content-view content-view__book text-white"
+        // className="content-view content-view__book"
+        className="flex w-screen h-[calc(100vh-48px)] overflow-x-hidden flex-grow"
         ref={context.contentViewRef}
       ></div>
-      <div className="content-view__pagination" onClick={goNextPage}>
-        {/* <ArrowForwardIosIcon color={atEnd ? 'disabled' : undefined} ></ArrowForwardIosIcon> */}
-        <button hidden={atEnd ? true : false}>{'>'}</button>
+      <div
+        className="w-[100px] flex items-center justify-center transition-all duration-300 cursor-pointer select-none  hover:bg-opacity-15"
+        onClick={goNextPage}
+      >
+        <button hidden={atEnd ? true : false}>
+          <Image
+            className="transform hover:scale-125 transition-transform duration-150"
+            src="/svg/right-white.svg"
+            alt="arrow-right"
+            width={40}
+            height={40}
+          />
+        </button>
       </div>
     </div>
   );

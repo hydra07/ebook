@@ -56,7 +56,6 @@ export default function useEpubReader({
 
   const init = async () => {
     const { toc } = await book!.loaded.navigation;
-    console.log('toc', toc);
     const node = contentViewRef.current as HTMLDivElement;
     const width = window.getComputedStyle(node).getPropertyValue('width');
     const epubRendition = book!.renderTo(node, { width, height: '100%' });
@@ -69,6 +68,20 @@ export default function useEpubReader({
     rendition.current = epubRendition;
 
     epubRendition.themes.fontSize(initialFontSize);
+    // epubRendition.themes.register('dark', {
+    //   body: {
+    //     color: 'white',
+    //     backgroundColor: 'black',
+    //   },
+    //   a: {
+    //     color: 'red',
+    //   },
+    //   li: {
+    //     'list-style-type': 'none',
+    //   },
+    // });
+    epubRendition.themes.register('dark', 'themes/dark.theme.css');
+    epubRendition.themes.select('dark');
     epubRendition.display(currentCfi);
 
     epubRendition.on(

@@ -44,7 +44,6 @@ export default function useBookContent(book: Book) {
     return res;
   };
   useEffect(() => {
-    // console.log('book', book);
     book && getBookContents();
   }, []);
 
