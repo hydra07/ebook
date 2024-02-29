@@ -1,8 +1,7 @@
 import Image from 'next/image';
-import { ChangeEvent, useContext, useRef } from 'react';
+import { ChangeEvent, useContext, useRef, useState } from 'react';
 import FileReaderInput from 'react-file-reader-input';
 import { readerContext } from './Reader';
-import SearchDrawer from './SearchDrawer';
 export default function Panel() {
   const context = useContext(readerContext);
   if (!context) return null;
@@ -25,6 +24,8 @@ export default function Panel() {
   } = context;
 
   const appbarRef = useRef<HTMLDivElement>(null);
+  //TODO: demo change mode
+  const [themeMode, setThemeMode] = useState<boolean>(true);
 
   let fontSize = initialFontSize;
   const isBookmarkAdded = bookmarks.find(
@@ -93,6 +94,21 @@ export default function Panel() {
     rendition.current?.themes.fontSize(fontSize);
   };
 
+  const changeMode = () => {
+    // console.log(':::', rendition.current.themes._current);
+    // if (rendition.current?.themes._current === 'dark') {
+    //   rendition.current?.themes.select('light');
+    // } else {
+    //   rendition.current?.themes.select('dark');
+    // }
+    if (!themeMode) {
+      rendition.current?.themes.select('dark');
+    } else {
+      rendition.current?.themes.select('light');
+    }
+    setThemeMode(!themeMode);
+  };
+
   const handleBookFileChange = (
     events: ChangeEvent<HTMLInputElement>,
     results: FileReaderInput.Result[],
@@ -110,7 +126,7 @@ export default function Panel() {
     events.target.setAttribute('value', '');
   };
   return (
-    <header className="h-10 w-screen sticky top-0 left-0 z-50 rounded-none border-b-1 bg-blue-gray-900 mb-2 justify-between flex ">
+    <header className="h-10 w-screen sticky top-0 left-0 z-50 rounded-none border-b-1 bg-blue-gray-900 justify-between flex">
       <div className="flex items-center justify-between pl-3">
         <button
           className="h-max items-center justify-between"
@@ -120,6 +136,45 @@ export default function Panel() {
         </button>
       </div>
       <div className="flex flex-row space-x-5 justify-end items-center pr-3 ">
+        {isBookmarkAdded ? (
+          <button
+            className="h-max items-center justify-between"
+            onClick={onRemoveBookmark}
+          >
+            <Image
+              src="/svg/bookmark-added.svg"
+              // src="/svg/menu-list-white.svg"
+              alt="menu"
+              width={22}
+              height={22}
+            />
+          </button>
+        ) : (
+          <button
+            className="h-max items-center justify-between"
+            onClick={onAddBookmark}
+          >
+            <Image
+              src="/svg/bookmark-white.svg"
+              // src="/svg/menu-list-white.svg"
+              alt="menu"
+              width={22}
+              height={22}
+            />
+          </button>
+        )}
+        <button
+          className="h-max items-center justify-between"
+          onClick={toggleBookmarkDrawer}
+        >
+          <Image
+            // src="/svg/bookmark-white.svg"
+            src="/svg/menu-list-white.svg"
+            alt="menu"
+            width={22}
+            height={22}
+          />
+        </button>
         <button
           className="h-max items-center justify-between"
           onClick={toggleFontSize}
@@ -143,7 +198,9 @@ export default function Panel() {
         >
           <Image src="/svg/search.svg" alt="menu" width={22} height={22} />
         </button>
-        <SearchDrawer />
+        {/* <SearchDrawer /> */}
+        {/* <BookmarkDrawer /> */}
+
         {/* <button
           className="h-max items-center justify-between"
           onClick={hidePanelBar}
@@ -156,6 +213,14 @@ export default function Panel() {
             height={22}
           />
         </button> */}
+        {/* <Switch
+          onChange={changeMode}
+          crossOrigin={null}
+          defaultChecked={themeMode}
+        /> */}
+        <button onClick={changeMode} className="">
+          {themeMode ? 'Light' : 'Dark'}
+        </button>
       </div>
     </header>
   );

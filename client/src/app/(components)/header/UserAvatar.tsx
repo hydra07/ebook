@@ -14,6 +14,7 @@ export default ({ user }: any) => {
     });
     // dispatch(logout());
   };
+  // console.log(user !== undefined);
   return (
     <Menu>
       <MenuHandler>

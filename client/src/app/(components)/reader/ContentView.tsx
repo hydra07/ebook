@@ -35,13 +35,30 @@ export default function ContentView() {
 
     return offListenKeyup;
   }, [rendition.current]);
-  console.log(isPanelBar);
+  //event listener mouse
+  useEffect(() => {
+    const handleMouseUp = (e: MouseEvent) => {
+      let selectedText = window.getSelection()?.toString();
+      if (selectedText && selectedText.length > 0) {
+        console.log('User selected: ', selectedText);
+      }
+    };
+    console.log('running...');
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  });
+
+  // console.log(isPanelBar);
   return (
     <div
       className={
         isPanelBar
-          ? 'flex w-screen h-[calc(100vh-48px)] overflow-x-hidden'
-          : 'flex w-screen h-screen overflow-x-hidden'
+          ? // ? 'flex w-screen h-[calc(100vh-48px)] overflow-x-hidden'
+            // : 'flex w-screen h-screen overflow-x-hidden'
+            'flex w-screen h-[calc(100vh-48px)] overflow-hidden'
+          : 'flex w-screen h-screen overflow-hidden'
       }
     >
       <div

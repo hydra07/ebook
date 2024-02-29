@@ -96,3 +96,12 @@ export const authOptions: NextAuthOptions = {
     signOut: '/logout',
   },
 };
+
+// export const refreshToken = async (token: string)  => {
+//   try {
+//     const res = await axiosWithAuth(token).post(`/auth/refresh`)
+//     return res.data;
+//   } catch (error) {
+//     console.log(error);
+//   }
+// };

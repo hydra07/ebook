@@ -1,6 +1,6 @@
 import { Drawer, List, ListItem } from '@material-tailwind/react';
 import { NavItem } from 'epubjs';
-import { useContext } from 'react';
+import { Fragment, useContext } from 'react';
 import { readerContext } from './Reader';
 /**
  * @description: List of chapters
@@ -16,28 +16,32 @@ export default function Catalogue() {
     toggleCatalogue();
   };
   return (
-    <div>
+    <Fragment>
       <Drawer
         open={isCatalogue}
         onClose={toggleCatalogue}
         placeholder={null}
         className="overflow-y-auto bg-blue-gray-900"
       >
-        <List placeholder={null}>
-          {catalogue?.map((item, index) => (
-            <ListItem
-              // className="overflow-y-auto"
-              className="text-white"
-              key={index}
-              onClick={() => handleCatalogChange(item)}
-              color="black"
-              placeholder={null}
-            >
-              {item.label}
-            </ListItem>
-          ))}
-        </List>
+        {catalogue && catalogue.length > 0 ? (
+          <List placeholder={null}>
+            {catalogue.map((item, index) => (
+              <ListItem
+                // className="overflow-y-auto"
+                className="text-white"
+                key={index}
+                onClick={() => handleCatalogChange(item)}
+                color="black"
+                placeholder={null}
+              >
+                {item.label}
+              </ListItem>
+            ))}
+          </List>
+        ) : (
+          <div>No items in catalogue</div>
+        )}
       </Drawer>
-    </div>
+    </Fragment>
   );
 }

@@ -22,6 +22,7 @@ export default () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+  // console.log('user ', JSON.stringify(user) === '{}' ? 'null' : user);
   return (
     <header
       className={`w-full py-[11px] fixed top-0 left-0 z-50 bg-black border-b border-gray-800 shadow-lg
@@ -50,7 +51,11 @@ export default () => {
 
           <div className="flex gap-6 h-fit items-center whitespace-nowrap">
             <Search />
-            {user ? <UserAvatar user={user} /> : <AuthButton />}
+            {user && JSON.stringify(user) !== '{}' ? (
+              <UserAvatar user={user} />
+            ) : (
+              <AuthButton />
+            )}
           </div>
         </div>
       </div>

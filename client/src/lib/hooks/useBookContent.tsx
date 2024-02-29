@@ -6,7 +6,6 @@ import { useEffect, useState } from 'react';
 
 export default function useBookContent(book: Book) {
   const [bookContents, setBookContents] = useState<BookContents>([]);
-
   const getBookContents = async () => {
     const spine = await book.loaded.spine;
     const contents: BookContents = [];
@@ -27,9 +26,10 @@ export default function useBookContent(book: Book) {
   };
 
   const searchText = (searchString: string): MatchSearches => {
-    const regexp = new RegExp(searchString, 'ig');
-
+    const regexp = new RegExp(searchString, 'ig'); //'i' không phân biệt hoa thường,'g': global
+    console.log(searchString);
     let res: MatchSearches = [];
+
     for (let content of bookContents) {
       for (let paragraph of content.text) {
         if (paragraph.match(regexp) !== null) {
@@ -40,12 +40,13 @@ export default function useBookContent(book: Book) {
         }
       }
     }
-
+    console.log(bookContents);
     return res;
   };
   useEffect(() => {
     book && getBookContents();
-  }, []);
+    // console.log(book);
+  }, [book ? book : null]); 
 
   return {
     bookContents,

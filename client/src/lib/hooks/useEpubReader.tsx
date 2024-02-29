@@ -10,6 +10,7 @@ import useBookContent from './useBookContent';
 import useBookmark from './useBookmark';
 import useBookmarkDrawer from './useBookmarkDrawer';
 import useSearchDrawer from './useSearchDrawer';
+import useSelectContent from './useSelectContent';
 import useSnackbar from './useSnackBar';
 export default function useEpubReader({
   url,
@@ -19,8 +20,25 @@ export default function useEpubReader({
   if (!url) return null;
   const [book, setBook] = useState<Book | null>(null);
   const [ebookUrl, setEbookUrl] = useState(url);
+  const [isBookSet, setIsBookSet] = useState(false);
+  useEffect(() => {
+    /**
+     * mục đích của hàm useEffect này là để fix lỗi ssr trên nextjs
+     * khi chạy trên server thì window không tồn tại
+     */
+    if (typeof window !== 'undefined') {
+      const book = Epub(ebookUrl, epubOptions);
+      setBook(book);
+      if (book) {
+        setIsBookSet(true);
+      }
+    }
+  }, []);
+
   const { isSearchDrawer, toggleSearchDrawer } = useSearchDrawer();
   const { isBookmarkDrawer, toggleBookmarkDrawer } = useBookmarkDrawer();
+  const { selectedContent, setSelectedContent, handleSelect } =
+    useSelectContent();
   const contentViewRef = useRef<HTMLDivElement>(null);
   const [catalogue, setCatalogue] = useState<NavItem[] | null>(null);
   const [isCatalogue, setIsCatalogue] = useState(false);
@@ -31,22 +49,12 @@ export default function useEpubReader({
   const [percentage, setPercentage] = useState(0);
   const [currentChapter, setCurretChapter] = useState('');
   const [currentCfi, setCurrentCfi] = useState('');
+  // const [themeMode, setThemeMode] = useState<boolean>(false);
   const { isSnackbar, snackbarMessage, showToast } = useSnackbar();
 
   const toggleCatalogue = () => {
     setIsCatalogue(!isCatalogue);
   };
-
-  useEffect(() => {
-    /**
-     * mục đích của hàm useEffect này là để fix lỗi ssr trên nextjs
-     * khi chạy trên server thì window không tồn tại
-     */
-    if (typeof window !== 'undefined') {
-      const book = Epub(ebookUrl, epubOptions);
-      setBook(book);
-    }
-  }, []);
 
   // const [book, setBook] = useState(() => Epub(ebookUrl, epubOptions) as Book);
   const initialFontSize = fontSize ? fontSize : '100%';
@@ -54,6 +62,9 @@ export default function useEpubReader({
   const { bookContents, searchBookContents } = useBookContent(book!);
   const { bookmarks, addBookmark, removeBookmark } = useBookmark();
 
+  /**
+   * @description: khởi tạo ebook
+   */
   const init = async () => {
     const { toc } = await book!.loaded.navigation;
     const node = contentViewRef.current as HTMLDivElement;
@@ -81,6 +92,7 @@ export default function useEpubReader({
     //   },
     // });
     epubRendition.themes.register('dark', 'themes/dark.theme.css');
+    epubRendition.themes.register('light', 'themes/light.theme.css');
     epubRendition.themes.select('dark');
     epubRendition.display(currentCfi);
 
@@ -94,6 +106,31 @@ export default function useEpubReader({
         setAtEnd(epubRendition.location.atEnd);
       },
     );
+
+    epubRendition.on('selected', function (cfiRange: any, contents: any) {
+      // epubRendition.annotations.highlight(cfiRange, {}, (e: any) => {
+      //   console.log('highlight clicked', e.target) ;
+      // });
+      // epubRendition.annotations.remove(cfiRange, 'highlight');
+      // epubRendition.annotations.highlight(cfiRange, {}, (e: any) => {
+      //   console.log('underline clicked', e.target);
+      //   epubRendition.annotations.remove(cfiRange, 'highlight');
+      // });
+      // console.log(epubRendition.annotations.);
+      // contents.window.getSelection().removeAllRanges();
+    });
+    // epubRendition.on('clicked', function (cfiRange: any, contents: any) {
+    //   epubRendition.annotations.remove(cfiRange, 'highlight');
+    // });
+    // epubRendition.on('selected', function (cfiRange: string, contents: any) {
+    //   // epubRendition.annotations.mark(cfiRange, {}, (e: any) => {
+    //   //   console.log('highlight clicked', contents);
+    //   //   console.log('highlight clicked', e.target);
+    //   // });
+    //   epubRendition.annotations.highlight(cfiRange, {}, (e: any) => {
+    //     console.log(contents);
+    //   });
+    // });
   };
 
   useEffect(() => {

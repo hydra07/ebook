@@ -22,7 +22,6 @@ const AuthButton = () => {
     setShowSignUpDialog(false);
     setShowSignInDialog(false);
   };
-
   return (
     <div>
       <div className="flex items-center gap-2 h-[42px]">
