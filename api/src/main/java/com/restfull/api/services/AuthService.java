@@ -86,5 +86,9 @@ public class AuthService {
     private boolean isPasswordMatches(String rawPassword, String encodedPassword) {
         return passwordEncoder.matches(rawPassword, encodedPassword);
     }
+
+    public String refresh(String token) {
+        return jwtService.generateRefreshToken(jwtService.getUser(token).getEmail());
+    }
 }
 

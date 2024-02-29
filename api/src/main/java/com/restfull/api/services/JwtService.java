@@ -53,6 +53,14 @@ public class JwtService {
         }
     }
 
+    //refresher token
+    public String generateRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .setExpiration(new Date(System.currentTimeMillis() + expiration * 10))
+                .signWith(getKey(), SignatureAlgorithm.HS512)
+                .compact();
+    }
     public String validateRequestHeader(String token) {
         if (token != null && token.startsWith("Bearer ")) {
             token = token.substring(7);
