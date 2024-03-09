@@ -10,7 +10,6 @@ export default function useBookmark() {
       ...bookmark,
       time: getCurLocaleTime(),
     };
-
     setBookmarks([...bookmarks, bookmarkWithTime]);
   };
 

@@ -1,17 +1,23 @@
+import Loading from '@/app/(components)/Loading';
 import '@/app/globals.css';
-import Ebook from '@/lib/modules/EpubViewer/Ebook';
-import { store } from '@/lib/store';
-import { Provider } from 'react-redux';
+import ReactViewer from '@/lib/modules/ReactViewer/ReactViewer';
+import { ViewerRef } from '@/types/ebook';
+import { useRef } from 'react';
 
-export default () => {
-  const demoUrl: string = 'Kiếm Lai - Phong Hoả Hí Chư Hầu.epub';
-  const theme: string = '/themes/dark.theme.css';
-  // const ref = useRef<ViewRef>(null);
-  return (
-    <Provider store={store}>
-      <div className="w-screen h-screen">
-        <Ebook demoUrl={demoUrl} theme={theme} />
-      </div>
-    </Provider>
-  );
-};
+
+
+// export default () => {
+//   const viewerRef = useRef<ViewerRef>(null);
+//   const demoUrl: string = 'Kiếm Lai - Phong Hoả Hí Chư Hầu.epub';
+//   // const theme: string = getTheme();
+//   return (
+//     <div>
+//       <ReactViewer
+//         url={demoUrl}
+//         viewerStyleURL={theme}
+//         ref={viewerRef}
+//         loadingView={<Loading />}
+//       />
+//     </div>
+//   );
+// };

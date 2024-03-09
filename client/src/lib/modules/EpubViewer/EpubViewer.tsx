@@ -1,18 +1,38 @@
-import { Loc, ViewRef } from '@/types/epub';
+import { EpubViewerProps, Loc, Toc, ViewerRef } from '@/types/ebook';
 import { Book, Rendition } from 'epubjs';
-import {
-  RefObject,
-  forwardRef,
+import React, {
+  CSSProperties,
   useCallback,
   useEffect,
   useRef,
   useState,
 } from 'react';
 
-function EpubViewer(
+import styles from './styles';
+
+/**
+ * EpubViewer Module
+ * @class
+ * @param props
+ * @param props.url Epub path
+ * @param props.epubFileOptions Epub file option
+ * @param props.epubOptions Epub viewer option
+ * @param props.style Epub Wrapper style
+ * @param props.location Epub CFI or href
+ * @param props.bookChanged Run when book changed
+ * @param props.rendtionChanged Run when rendition changed
+ * @param props.pageChanged Run when page changed
+ * @param props.tocChanged Run when toc changed
+ * @param props.selectionChanged Run when selected
+ * @param props.loadingView Loading Component
+ * @param ref Viewer ref
+ */
+const EpubViewer = (
   {
     url,
+    epubFileOptions,
     epubOptions,
+    style,
     location,
     bookChanged,
     rendtionChanged,
@@ -20,74 +40,71 @@ function EpubViewer(
     tocChanged,
     selectionChanged,
     loadingView,
-  }: any, //TODO: define type for props
-  ref: RefObject<ViewRef> | any,
-) {
+  }: EpubViewerProps,
+  ref: React.RefObject<ViewerRef> | any,
+) => {
+  // TODO Fix the ref type correctly instead 'any' type.
+  const viewerStyle: CSSProperties = style ? { ...styles, ...style } : styles;
+
   const [isLoaded, setIsLoaded] = useState(false);
+
   const [book, setBook] = useState<Book | null>(null);
+
   const [rendition, setRendition] = useState<Rendition | null>(null);
+
   const currentCfi = useRef<string>('');
 
   /**
-   * Hàm này dùng để di chuyển trang
-   * @param type 'prev' hoặc 'next'
-   * @returns void
-   * @dependencies rendition
+   * Move page
+   * @method
+   * @param type direction
    */
   const movePage = useCallback(
-    (type: 'prev' | 'next') => {
+    (type: 'PREV' | 'NEXT') => {
       if (!rendition) return;
-      if (type === 'prev') return rendition.prev();
-      else return rendition.next();
+      if (type === 'PREV') rendition.prev();
+      else rendition.next();
     },
     [rendition],
   );
 
   /**
-   * Hàm này dùng để di chuyển trang bằng phím
-   * @param key
-   * @returns void
-   * @dependencies movePage():void
+   * Move page by arrow key
+   * @method
+   * @param props Keyboard Event
+   * @param props.key
    */
-
-  const handleKeyPres = useCallback(
+  const handleKeyPress = useCallback(
     ({ key }: any) => {
-      key && key === 'ArrowLeft' && movePage('prev');
-      key && key === 'ArrowRight' && movePage('next');
+      key && key === 'ArrowLeft' && movePage('PREV');
+      key && key === 'ArrowRight' && movePage('NEXT');
     },
     [movePage],
   );
+
   /**
-   * Hàm này sẽ chạy khi loc/location thay đổi
+   * Run when location changed
+   * @method
    * @param loc
-   * @returns void
-   * @dependencies book, pageChanged
+   * - Set location state
+   * - Run 'locationChanged()' through startCFI
    */
   const onLocationChange = useCallback(
     (loc: Loc) => {
       const startCfi = loc && loc.start;
       const endCfi = loc && loc.end;
-      const base = loc && loc.start.slice(8).split('!')[0]; //TODO: chưa hiểu dùng để làm gì ?
+      const base = loc && loc.start.slice(8).split('!')[0];
 
       if (!book) return;
+
       const spineItem = book.spine.get(startCfi);
       const navItem = book.navigation.get(spineItem.href);
       const chapterName = navItem && navItem.label.trim();
 
-      const locations = book.locations as any; //TODO: sửa type cho locations
-      const currentPage = locations && locations.locationFromCfi(startCfi);
-      const totalPage = locations && locations.total;
+      const locations: any = book.locations;
+      const currentPage = locations.locationFromCfi(startCfi);
+      const totalPage = locations.total;
 
-      console.log(
-        'onLocationChange: ',
-        locations.locationFromCfi(startCfi),
-        currentPage,
-        totalPage,
-        startCfi,
-        endCfi,
-        base,
-        chapterName,
-      );
       pageChanged &&
         pageChanged({
           chapterName,
@@ -97,18 +114,17 @@ function EpubViewer(
           endCfi,
           base,
         });
+
       currentCfi.current = startCfi;
     },
     [book, pageChanged],
   );
 
   /**
-   * Hàm này sẽ chạy khi chọn text
-   * @param cfiRange as string
-   * @param callback as (e: any) => void
-   * @returns color as string
-   * @returns void
-   * @dependencies rendition
+   * Highlight function
+   * @param cfiRange Selected CFIRange
+   * @param callback Highlight callback function when click it
+   * @param color Highlight color
    */
   const onHighlight = useCallback(
     (cfiRange: string, callback?: (e: any) => void, color?: string) => {
@@ -121,147 +137,163 @@ function EpubViewer(
         callback,
         'epub-highlight',
         {
-          // fill: color || '#fdf183',
-          fill: color || '#f22',
+          fill: color || '#fdf183',
         },
       );
-      // console.log('onHighlight: ', cfiRange);
     },
     [rendition],
   );
 
   /**
-   * Hàm này sẽ chạy khi bỏ highlight
-   * @param cfiRange as string
-   * @returns void
-   * @dependencies rendition
+   * Highlight remove function
+   * @param cfiRange Selected CFIRange
    */
   const onRemoveHighlight = useCallback(
     (cfiRange: string) => {
       if (!rendition) return;
+
       rendition.annotations.remove(cfiRange, 'highlight');
     },
     [rendition],
   );
 
+  /**
+   * Register viewer control function
+   * @method
+   * - REF.CURRENT.prevPage() : Move prev page
+   * - REF.CURRENT.nextPage() : Move next page
+   * - REF.CURRENT.getCurrentCfi() : Get current CFI
+   * - REF.CURRENT.onHighlight(): Set highlight
+   * - REF.CURRENT.offHighlight(): Remove specific highliht
+   * - REF.CURRENT.seLocation(): Move to specific cfi or href
+   */
   const registerGlobalFunc = useCallback(() => {
     if (!ref.current) return;
     if (movePage) {
-      ref.current.prevPage = () => movePage('prev');
-      ref.current.nextPage = () => movePage('next');
+      ref.current.prevPage = () => movePage('PREV');
+      ref.current.nextPage = () => movePage('NEXT');
     }
     ref.current.getCurrentCfi = () => currentCfi.current;
-    if (onHighlight) ref.current.onHighlight = onHighlight;
-    if (onRemoveHighlight) ref.current.onRemoveHighlight = onRemoveHighlight;
-    if (rendition)
+    if (onHighlight) {
+      ref.current.onHighlight = onHighlight;
+    }
+    if (onRemoveHighlight) {
+      ref.current.offHighlight = onRemoveHighlight;
+    }
+    if (rendition) {
       ref.current.setLocation = (location: string) =>
         rendition.display(location);
+    }
   }, [ref, rendition, movePage, onHighlight, onRemoveHighlight]);
 
-  /**
-   *  Ref checker
-   */
+  /** Ref Checker */
   useEffect(() => {
-    if (!ref.current) {
-      throw new Error('EpubViewer: ref is not defined');
+    if (!ref) {
+      throw new Error(
+        '[React-Epub-Viewer] Put a ref argument that has a ViewerRef type.',
+      );
     }
   }, [ref]);
 
-  /**
-   *  init book
-   */
+  /** Epub init options Changed */
   useEffect(() => {
     if (!url) return;
 
     let mounted: boolean = true;
-    let _book: Book | any = null;
+    let book_: Book | any = null;
 
     if (!mounted) return;
-    if (_book) {
-      _book.destroy();
+
+    if (book_) {
+      book_.destroy();
     }
 
-    _book = new Book(url, epubOptions);
-    setBook(_book);
-    // setEbook(_book);
+    book_ = new Book(url, epubFileOptions);
+    setBook(book_);
+
     return () => {
       mounted = false;
     };
-  }, [url, epubOptions, setBook, setIsLoaded]);
+  }, [url, epubFileOptions, setBook, setIsLoaded]);
 
-  /**
-   * book changed
-   */
+  /** Book Changed */
   useEffect(() => {
     if (!book) return;
+
     if (bookChanged) bookChanged(book);
 
     book.loaded.navigation.then(({ toc }) => {
-      const _toc = toc.map((item) => ({
-        label: item.label,
-        href: item.href,
+      const toc_: Toc[] = toc.map((t) => ({
+        label: t.label,
+        href: t.href,
       }));
+
       setIsLoaded(true);
-      if (tocChanged) tocChanged(_toc);
+      if (tocChanged) tocChanged(toc_);
     });
 
     book.ready
-      .then(() => {
+      .then(function () {
         if (!book) return;
 
-        const stored = localStorage.getItem(book.key() + '-localtions');
+        const stored = localStorage.getItem(book.key() + '-locations');
         if (stored) {
-          book.locations.load(stored);
+          return book.locations.load(stored);
         } else {
-          book.locations.generate(1024);
+          return book.locations.generate(1024);
         }
       })
       .then(() => {
         if (!book) return;
-        localStorage.setItem(book.key() + '-localtions', book.locations.save());
+        // localStorage.setItem(book.key() + '-locations', book.locations.save());
       });
   }, [book, bookChanged, tocChanged]);
 
-  /**
-   * rendtion changed
-   */
+  /** Rendition Changed */
   useEffect(() => {
     if (!rendition) return;
+
     if (rendtionChanged) rendtionChanged(rendition);
   }, [rendition, rendtionChanged]);
 
-  /** EpubOptions changed */
+  /** Viewer Option Changed */
   useEffect(() => {
-    let mounted: boolean = true;
+    let mounted = true;
     if (!book) return;
+
     const node = ref.current;
     if (!node) return;
     node.innerHTML = '';
 
-    book.ready.then(() => {
+    book.ready.then(function () {
       if (!mounted) return;
 
       if (book.spine) {
         const loc = book.rendition?.location?.start?.cfi;
 
-        const _redition = book.renderTo(node, {
-          // contained: true,
+        // if (book.rendition) book.rendition.destroy();
+
+        const rendition_ = book.renderTo(node, {
           width: '100%',
           height: '100%',
           ...epubOptions,
         });
-        setRendition(_redition);
+        setRendition(rendition_);
 
-        if (loc) _redition.display(loc);
-        else _redition.display();
+        if (loc) {
+          rendition_.display(loc);
+        } else {
+          rendition_.display();
+        }
       }
     });
+
     return () => {
       mounted = false;
     };
-  }, [ref, book, epubOptions, setRendition]);
+  }, [ref, book, epubOptions, style, setRendition]);
 
-  /** Location changed */
+  /** Location Changed */
   useEffect(() => {
     if (!ref.current || !location) return;
     if (ref.current.setLocation) ref.current.setLocation(location);
@@ -273,31 +305,33 @@ function EpubViewer(
    * - Register location changed event
    * - Register selection event
    */
+  /* eslint-disable */
   useEffect(() => {
     if (!rendition) return;
 
     // Emit global control function
     registerGlobalFunc();
 
-    document.addEventListener('keyup', handleKeyPres, false);
-    rendition.on('keyup', handleKeyPres);
+    document.addEventListener('keyup', handleKeyPress, false);
+    rendition.on('keyup', handleKeyPress);
     rendition.on('locationChanged', onLocationChange);
     selectionChanged && rendition.on('selected', selectionChanged);
 
     return () => {
-      document.removeEventListener('keyup', handleKeyPres, false);
-      rendition.off('keyup', handleKeyPres);
+      document.removeEventListener('keyup', handleKeyPress, false);
+      rendition.off('keyup', handleKeyPress);
       rendition.off('locationChanged', onLocationChange);
       selectionChanged && rendition.off('selected', selectionChanged);
     };
-  }, [rendition, registerGlobalFunc, handleKeyPres]);
+  }, [rendition, registerGlobalFunc, handleKeyPress]);
+  /* eslint-enable */
 
   return (
     <>
       {!isLoaded && loadingView}
-      <div ref={ref} />
+      <div ref={ref} style={viewerStyle} />
     </>
   );
-}
+};
 
-export default forwardRef(EpubViewer);
+export default React.forwardRef(EpubViewer);

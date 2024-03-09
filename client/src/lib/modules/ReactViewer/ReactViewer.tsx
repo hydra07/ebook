@@ -1,18 +1,45 @@
-import { ReactViewerProps, ViewRef } from '@/types/epub';
-import { debounce } from '@/utils/epub.utils';
 import { Book, Contents, Rendition } from 'epubjs';
-import {
-  RefObject,
-  forwardRef,
+import React, {
   useCallback,
   useEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import viewerDefaultStyles from '../style/viewerDefautlStyle';
-import EpubViewer from './EpubViewer';
-function ReactEpub(
+// modules
+import EpubViewer from '../EpubViewer/EpubViewer';
+// components
+import LoadingView from '@/app/(components)/Loading';
+// utils
+import { debounce, timeFormatter } from '@/utils/epub.utils';
+// styles
+import viewerDefaultStyles from './viewerStyle';
+// types
+import {
+  BookOption,
+  BookStyle,
+  BookType,
+  ReactViewerProps,
+  ViewerRef,
+} from '@/types/ebook';
+
+/**
+ * Epub React Viewer Module
+ * @class
+ * @param props
+ * @param props.url Epub file path
+ * @param props.viewerLayout Viewer layout
+ * @param props.viewerStyle Viewer style
+ * @param props.viewerStyleURL Viwer style - CSS URL
+ * @param props.viewerOption Viewer option
+ * @param props.onBookInfoChange Run when book information changed
+ * @param props.onPageChange Run when page changed
+ * @param props.onTocChange Run when toc changed
+ * @param props.onSelection Run when selected
+ * @param props.loadingView Loading component
+ * @param ref Viewer ref
+ */
+const ReactViewer = (
   {
     url,
     viewerLayout,
@@ -24,20 +51,25 @@ function ReactEpub(
     onTocChange,
     onSelection,
     loadingView,
-  }: ReactViewerProps, //TODO: define type for props
-  ref: RefObject<ViewRef> | any,
-) {
+  }: ReactViewerProps,
+  ref: React.RefObject<ViewerRef> | any,
+) => {
+  // TODO Fix the ref type correctly instead 'any' type.
   const [book, setBook] = useState<Book | null>(null);
+
   const [rendition, setRendition] = useState<Rendition | null>(null);
+
   const [layoutStyle, setLayoutStyle] = useState<{ [key: string]: any }>({});
-  const [bookStyle, setBookStyle] = useState({
+
+  const [bookStyle, setBookStyle] = useState<BookStyle>({
     fontFamily: 'Origin',
-    fontSize: 25,
+    fontSize: 16,
     lineHeight: 1.4,
     marginHorizontal: 0,
     marginVertical: 0,
   });
-  const [bookOption, setBookOption] = useState({
+
+  const [bookOption, setBookOption] = useState<BookOption>({
     flow: 'paginated',
     resizeOnOrientationChange: true,
     spread: 'auto',
@@ -89,7 +121,6 @@ function ReactEpub(
           MIN_VIEWER_HEIGHT: 300,
           VIEWER_HEADER_HEIGHT: 0,
           VIEWER_FOOTER_HEIGHT: 0,
-          // VIEWER_FOOTER_HEIGHT: 40,
           VIEWER_SIDEMENU_WIDTH: 0,
         };
 
@@ -103,7 +134,6 @@ function ReactEpub(
             ((win_w - viewerLayout_.MIN_VIEWER_WIDTH) / 100) *
             bookStyle.marginHorizontal
           );
-
         const h =
           bookOption.flow === 'scrolled-doc'
             ? win_h - componentHeight
@@ -141,9 +171,9 @@ function ReactEpub(
           }
           return layout;
         });
+
         try {
           rendition.resize(w, h);
-          // rendition.resize(win_w, win_h);
         } catch {}
       }),
     [
@@ -184,7 +214,6 @@ function ReactEpub(
     if (!contents) return;
 
     onSelection && onSelection(cfiRange, contents);
-    // console.log('onSelected: ', selectionText);
   }, [ref, onSelection]);
 
   /** Ref checker */
@@ -195,6 +224,33 @@ function ReactEpub(
       );
     }
   }, [ref]);
+
+  /** Epub parsing */
+  // TODO Fix the infinite re-rendering issue, when inlcude `onBookInfoChange` to dependencies array.
+  /* eslint-disable */
+  useEffect(() => {
+    if (!book) return;
+
+    Promise.all([book.loaded.metadata, book.opened])
+      .then(([metaData, bookData]: any[]) => {
+        const newBookData: BookType = {
+          coverURL: bookData.archive.urlCache[bookData.cover],
+          title: metaData.title,
+          description: metaData.description,
+          published_date: timeFormatter(new Date(metaData.pubdate)),
+          modified_date: timeFormatter(new Date(metaData.modified_date)),
+          author: metaData.creator,
+          publisher: metaData.publisher,
+          language: metaData.language,
+        };
+
+        onBookInfoChange && onBookInfoChange(newBookData);
+      })
+      .catch((error) => {
+        throw `${error.stack} \n\n Message : Epub parsing failed.`;
+      });
+  }, [book]);
+  /* eslint-enable */
 
   /** Set viewer Styles/Options */
   useEffect(() => {
@@ -283,11 +339,11 @@ function ReactEpub(
         tocChanged={onTocChange}
         pageChanged={onPageChange}
         selectionChanged={selectionChanged}
-        loadingView={loadingView}
+        loadingView={loadingView || <LoadingView />}
         ref={ref}
       />
     </>
   );
-}
+};
 
-export default forwardRef(ReactEpub);
+export default React.forwardRef(ReactViewer);

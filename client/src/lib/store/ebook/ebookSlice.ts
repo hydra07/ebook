@@ -1,30 +1,76 @@
-import { EbookState } from '@/types/epub';
+import { Bookmarks, Highlight, Page, Toc } from '@/types/ebook';
 import { createSlice } from '@reduxjs/toolkit';
 
-const initialState: EbookState = {
-  isLoaded: false,
-  book: null,
-  rendition: null,
+interface EbookState {
+  book: any;
+  currentLocation: Page;
+  theme: string;
+  toc: Toc[];
+  highLight: Highlight[];
+  bookmarks: Bookmarks;
+}
+
+const initialBook = {
+  coverURL: '',
+  title: '',
+  description: '',
+  author: '',
+  published_date: '',
+  modified_date: '',
 };
+
+const initialCurrentLocation: Page = {
+  chapterName: '-',
+  currentPage: 0,
+  totalPage: 0,
+  startCfi: '',
+  endCfi: '',
+  base: '',
+};
+
+const initialState: EbookState = {
+  book: initialBook,
+  currentLocation: initialCurrentLocation,
+  theme: '',
+  toc: [],
+  highLight: [],
+  bookmarks: [],
+};
+
+// Slice
 const ebookSlice = createSlice({
   name: 'ebook',
   initialState,
   reducers: {
-    setIsLoaded: (state, action) => {
-      state.isLoaded = action.payload;
-    },
-    setBook: (state, action) => {
+    updateBook(state, action) {
       state.book = action.payload;
     },
-    setRendition: (state, action) => {
-      state.rendition = action.payload;
+    clearBook(state) {
+      state.book = initialBook;
     },
-    // setCurrentCfi: (state, action) => {
-    //   state.currentCfi = action.payload;
-    // },
+    updateCurrentPage(state, action) {
+      state.currentLocation = action.payload as Page;
+    },
+    updateToc(state, action) {
+      state.toc = action.payload;
+    },
+    clearToc(state) {
+      state.toc = [];
+    },
+    updateCurrentTheme(state, action) {
+      state.theme = action.payload;
+    },
+    updateBookmark(state, action) {
+      state.bookmarks = action.payload;
+    },
   },
-  extraReducers: (builder) => {},
 });
 
-export const {} = ebookSlice.actions;
+export const {
+  updateBook,
+  updateCurrentPage,
+  updateToc,
+  updateCurrentTheme,
+  updateBookmark,
+} = ebookSlice.actions;
 export default ebookSlice.reducer;

@@ -51,13 +51,13 @@ export interface ILocationChangeProps {
   start: string;
 }
 
-export type BookmarkItem = {
-  name: string;
-  cfi: string;
-  time: string;
-};
+// export type BookmarkItem = {
+//   name: string;
+//   cfi: string;
+//   time: string;
+// };
 
-export type Bookmarks = Array<BookmarkItem>;
+// export type Bookmarks = Array<BookmarkItem>;
 
 export interface addBookmarkFn {
   (bookmark: Omit<BookmarkItem, 'time'>): void;

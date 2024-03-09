@@ -1,3 +1,4 @@
+import { BookmarkItem } from './reader.d';
 // import { Book, Rendition } from 'epubjs/types/epub';
 import { Contents } from 'epubjs';
 type EpubCFI = string;
@@ -12,7 +13,7 @@ type EpubCFI = string;
  * @param publisher 발행자
  * @param language 도서 언어
  */
-type Book = {
+type BookType = {
   coverURL: string;
   title: string;
   description: string;
@@ -52,19 +53,8 @@ interface Toc {
   label: string;
   href: string;
 }
-interface ViewRef extends HTMLDivElement {
-  prevPage: () => void;
-  nextPage: () => void;
-  getCurrentCfi: () => EpubCFI;
-  onHighlight: (
-    cfiRange: string,
-    callback?: (e: any) => void,
-    color?: string,
-  ) => void;
-  onRemoveHighlight: (cfiRange: string) => void;
-  setLocation: (location: string) => void;
-}
-interface Highlight {
+
+export interface Highlight {
   // cfiRange: string;
   key: string;
   accessTime: string;
@@ -76,6 +66,16 @@ interface Highlight {
   pageNum: number;
   content: string;
 }
+/**
+ * Bookmarks
+ */
+export interface BookmarkItem {
+  key: number;
+  name: string;
+  cfi: string;
+  time: string;
+}
+export type Bookmarks = Array<BookmarkItem>;
 
 /**
  * Epub viewer layout size type
@@ -86,7 +86,7 @@ interface Highlight {
  * @param VIEWER_FOOTER_HEIGHT Viewer footer height (px)
  * @param VIEWER_SIDEMENU_WIDTH Viewer sideMenu width (px)
  */
-interface ViewerLayout {
+export interface ViewerLayout {
   MIN_VIEWER_WIDTH: number;
   MIN_VIEWER_HEIGHT: number;
   VIEWER_HEADER_HEIGHT: number;
@@ -112,6 +112,15 @@ export type BookStyle = {
 
 /**
  * @type
+ * - Origin: 원본
+ * - *: 커스텀 폰트
+ */
+export type BookFontFamily = 'Origin' | 'Roboto';
+
+export type BookFlow = 'paginated' | 'scrolled-doc';
+
+/**
+ * @type
  * @param flow 가로읽기 or 세로읽기(스크롤)
  * @param resizeOnOrientationChange 방향 전환시 크기 조절 여부
  * @param spread 펼쳐보기 여부
@@ -123,36 +132,38 @@ export type BookOption = {
 };
 
 /**
- * React Epub Viewer Props
- * @type
- * @param url Epub file path
- * @param viewerLayout Viewer layout
- * @param viewerStyle Viewer style
- * @param viewerStyleURL Viewer style - CSS URL
- * @param viewerOption Viewer option
- * @param onBookInfoChange Run when book information changed
- * @param onPageChange Run when page changed
- * @param onTocChange Run when toc changed
- * @param onSelection Run when selected
- * @param loadingView Loading component
+ * DOM Element wrapping the Epub viewer
+ * - Provides special methods.
  */
-export interface ReactViewerProps {
-  url: string;
-  viewerLayout?: ViewerLayout;
-  viewerStyle?: BookStyle;
-  viewerStyleURL?: string;
-  viewerOption?: BookOption;
-  onBookInfoChange?: (book: Book) => void;
-  onPageChange?: (page: Page) => void;
-  onTocChange?: (toc: Toc[]) => void;
-  onSelection?: (cfiRange: string, contents: Contents) => void;
-  loadingView?: React.ReactNode;
+export interface ViewerRef extends HTMLDivElement {
+  /** Move the viewer to the previous page */
+  prevPage: () => void;
+  /** Move the viewer to the next page */
+  nextPage: () => void;
+  /** Get CFI in current page */
+  getCurrentCfi: () => string;
+  /**
+   * Highlighting specific CFIRange
+   * @param cfiRange CFIRange
+   * @param callback Callback after click highlight
+   * @param color Highlight color
+   */
+  onHighlight: (
+    cfiRange: string,
+    callback?: (e: any) => void,
+    color?: string,
+  ) => void;
+  /**
+   * Remove specific highlight
+   * @param cfiRange CFIRange
+   */
+  offHighlight: (cfiRange: string) => void;
+  /**
+   * Move the viewer to the cfi or href
+   * @param location CFI or Href
+   */
+  setLocation: (location: string) => void;
 }
-
-declare class ReactEpubViewer extends React.Component<
-  ReactViewerProps,
-  ViewerRef
-> {}
 
 /**
  * Epub Viewer Props
@@ -185,4 +196,46 @@ export interface EpubViewerProps {
 
 declare class EpubViewer extends React.Component<EpubViewerProps, ViewerRef> {}
 
-export { EbookState, EpubViewer, Loc, ReactEpubViewer, Toc, ViewRef };
+/**
+ * React Epub Viewer Props
+ * @type
+ * @param url Epub file path
+ * @param viewerLayout Viewer layout
+ * @param viewerStyle Viewer style
+ * @param viewerStyleURL Viewer style - CSS URL
+ * @param viewerOption Viewer option
+ * @param onBookInfoChange Run when book information changed
+ * @param onPageChange Run when page changed
+ * @param onTocChange Run when toc changed
+ * @param onSelection Run when selected
+ * @param loadingView Loading component
+ */
+export interface ReactViewerProps {
+  url: string;
+  viewerLayout?: ViewerLayout;
+  viewerStyle?: BookStyle;
+  viewerStyleURL?: string;
+  viewerOption?: BookOption;
+  onBookInfoChange?: (book: BookType) => void;
+  onPageChange?: (page: Page) => void;
+  onTocChange?: (toc: Toc[]) => void;
+  onSelection?: (cfiRange: string, contents: Contents) => void;
+  loadingView?: React.ReactNode;
+}
+
+declare class ReactEpubViewer extends React.Component<
+  ReactViewerProps,
+  ViewerRef
+> {}
+
+export {
+  BookType,
+  EpubViewer,
+  EpubViewer,
+  Loc,
+  Page,
+  ReactEpubViewer,
+  ReactEpubViewer,
+  Toc,
+  ViewerRef,
+};
