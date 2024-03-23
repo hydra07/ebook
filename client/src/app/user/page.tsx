@@ -1,5 +1,3 @@
-
-
 'use client';
 import Profile from '@/app/(components)/profile';
 import User from '@/types/user';
@@ -29,10 +27,6 @@ export default () => {
   useEffect(() => {
     if (session?.user) {
       setInforUser();
-      //   console.log(user);
-      //   getProfile(session?.user.accessToken as string).then((res) => {
-      //     console.log('user fetch từ hàm', res);
-      //   });
     } else {
       console.log('count');
     }

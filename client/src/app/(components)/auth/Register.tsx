@@ -1,5 +1,6 @@
 import { Input } from '@material-tailwind/react';
 // import Google from 'next-auth/providers/google';
+import { signIn } from 'next-auth/react';
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { ShowDiaLog } from '../header/AuthButton';
 import Google from './Google';
@@ -35,6 +36,12 @@ export default ({ setShowSignInDialog, setShowSignUpDialog }: ShowDiaLog) => {
     } else {
       const { repassword, ...rest } = form;
       setFromData(rest);
+      await signIn('register', {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        callbackUrl: '/',
+      });
       // await console.log(dispatch(register(formData)));
     }
   };
@@ -126,7 +133,7 @@ export default ({ setShowSignInDialog, setShowSignUpDialog }: ShowDiaLog) => {
           <p className="text-white pt-4">Hoặc đăng ký với</p>
         </form>
         <div className="space-x-3 py-5">
-          <button className="border border-white py-2 px-4 rounded-full text-white whitespace-nowrap ">
+          {/* <button className="border border-white py-2 px-4 rounded-full text-white whitespace-nowrap ">
             <span className="flex ">
               <img
                 src="/svg/facebook.svg"
@@ -137,7 +144,7 @@ export default ({ setShowSignInDialog, setShowSignUpDialog }: ShowDiaLog) => {
               />
               Facebook
             </span>
-          </button>
+          </button> */}
           <Google />
         </div>
         <div className="py-4 w-full mt-7-5 border-t border-white-overlay text-center rounded-bl-[20px] rounded-br-[20px]">

@@ -1,4 +1,9 @@
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import {
+  Action,
+  ThunkAction,
+  combineReducers,
+  configureStore,
+} from '@reduxjs/toolkit';
 import ebook from './ebook/ebookSlice';
 // const rootReducer = combineReducers({
 //   ebook: ebookReducer,
@@ -28,8 +33,18 @@ const reducer = combineReducers({
 
 export type RootState = ReturnType<typeof reducer>;
 
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
 const store = configureStore({
   reducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }),
 });
-
+export type AppDispatch = typeof store.dispatch;
 export default store;

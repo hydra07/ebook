@@ -38,6 +38,36 @@ export const authOptions: NextAuthOptions = {
         }
       },
     }),
+    Credentials({
+      name: 'Register',
+      id: 'register',
+      credentials: {
+        name: {},
+        email: {},
+        password: {},
+      },
+      async authorize(credentials) {
+        try {
+          const _user = {
+            name: credentials?.name,
+            email: credentials?.email,
+            password: credentials?.password,
+          };
+          const res = await axios.post('/auth/register', _user);
+          const { token, message, user } = res.data;
+          if (res.data) {
+            // return { token, message };
+            // return Promise.resolve({ token, message });
+            console.log('res.data ', JSON.stringify(res.data));
+            return res.data;
+            // return { id: token, name: message, email: credentials?.email };
+          }
+          return null;
+        } catch (error: any) {
+          throw new Error(error);
+        }
+      },
+    }),
   ],
   callbacks: {
     async signIn({ account, user }) {

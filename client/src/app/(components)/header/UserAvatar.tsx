@@ -41,7 +41,13 @@ export default ({ user }: any) => {
         className="border-gray-400 bg-opacity-80 backdrop-blur-lg bg-black text-white"
         placeholder={null}
       >
-        <MenuItem color="lightBlue" placeholder={null} onClick={() => {}}>
+        <MenuItem
+          color="lightBlue"
+          placeholder={null}
+          onClick={() => {
+            window.location.href = '/profile';
+          }}
+        >
           Tài khoản
         </MenuItem>
         <MenuItem

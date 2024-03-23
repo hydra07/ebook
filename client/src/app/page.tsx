@@ -1,4 +1,5 @@
 // 'use client';
+'use strict';
 import axios from '@/lib/axios';
 import ErrorDisconnectServer from './(components)/ErrorDisconnectServer';
 import Home from './(components)/home';

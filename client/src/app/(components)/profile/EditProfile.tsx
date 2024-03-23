@@ -32,6 +32,7 @@ export default ({
   const [imageError, setImageError] = useState<boolean>(false);
   const [updateComplete, setUpdateComplete] = useState<boolean>(false);
   const { data: session } = useSession();
+
   const handleChange = useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       setForm((prev) => ({
@@ -41,27 +42,16 @@ export default ({
     },
     [form],
   );
-  // const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-  //   // setForm((prev) => ({
-  //   //   ...prev,
-  //   //   [event.target.id]: event.target.value,
-  //   // }));
-  //   setForm({ ...form, [event.target.id]: event.target.value });
-  //   console.log(form);
-  // };
   const handleSubmit = useCallback(
     async (event: ChangeEvent<HTMLFormElement>) => {
       event.preventDefault();
       await editProfile(session?.user.accessToken as string, form as User);
+      console.log('form', form);
       setIsEditUser(false);
     },
     [form, session],
   );
-  // const handleSubmit = async (event: ChangeEvent<HTMLFormElement>) => {
-  //   event.preventDefault();
-  //   await editProfile(session?.user.accessToken as string, form as User);
-  //   setIsEditUser(false);
-  // };
+
   const handleFileUpload = async (image: File) => {
     const storage = getStorage(app);
     const fileName = new Date().getTime() + '-' + image.name;
@@ -80,11 +70,13 @@ export default ({
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setUser({ ...form, image: downloadURL });
+          setForm({ ...form, image: downloadURL });
           console.log('File available at', downloadURL);
         });
       },
     );
   };
+
   useEffect(() => {
     if (image) {
       handleFileUpload(image);
@@ -133,6 +125,15 @@ export default ({
           onClick={() => fileRef.current?.click()}
         />
       </div>
+      {imagePercent > 0 && imagePercent < 100 && (
+        <div className="flex justify-center">
+          <progress
+            className="progress-bar"
+            value={imagePercent}
+            max="100"
+          ></progress>
+        </div>
+      )}
       <h1 className={'text-2xl justify-center self-center'}>Edit Profile</h1>
       <div className="text-center mt-2 mb-5">
         <p className="text-lg font-bold mb-2">{user?.email}</p>

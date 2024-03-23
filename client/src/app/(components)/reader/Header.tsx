@@ -1,29 +1,29 @@
 import { isNotNullOrUndefined } from '@/utils/common.utils';
 
 type HeaderProps = {
-  onThemeChange: () => void;
+  // onThemeChange: () => void;
   onNavToggle: () => void;
   height: number | null;
   onBookmarkToggle?: () => void;
   onAddBookmark?: () => void;
   onRemoveBookmark?: () => void;
   bookmarkButton?: JSX.Element;
+  onStyleToggle?: () => void;
 };
 /**
  * @name Header
  * @description EbookViewer Header
- * @param {function} onThemeChange - change theme mode
  * @param {number} height - header height (default: 40)
  * @returns {JSX.Element}
  */
 export default function Header({
   height,
-  onThemeChange,
   onNavToggle,
   onBookmarkToggle,
   onAddBookmark,
   onRemoveBookmark,
   bookmarkButton,
+  onStyleToggle,
 }: HeaderProps) {
   return (
     <div
@@ -44,11 +44,12 @@ export default function Header({
               className="w-8 h-8"
             />
           </button>
+          <button onClick={onStyleToggle}>
+            {/* <img src="/svg/setting-white.svg" alt="menu" className="w-8 h-8" /> */}
+            <span>Setting</span>
+          </button>
           {/* <button onClick={onAddBookmark} children="addBookmark" /> */}
           {bookmarkButton}
-          <button onClick={onThemeChange}>
-            <span>Mode</span>
-          </button>
         </div>
       </div>
     </div>

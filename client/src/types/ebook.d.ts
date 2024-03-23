@@ -131,6 +131,10 @@ export type BookOption = {
   spread: 'auto' | 'none';
 };
 
+export type ViewType = {
+  active: boolean;
+  spread: boolean;
+};
 /**
  * DOM Element wrapping the Epub viewer
  * - Provides special methods.

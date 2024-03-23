@@ -2,7 +2,7 @@
 // import {User} from "next-auth";
 // "use client";
 import User from '@/types/user';
-import { Button } from '@material-tailwind/react';
+import { Button, ButtonGroup } from '@material-tailwind/react';
 import Image from 'next/image';
 import { useCallback } from 'react';
 // eslint-disable-next-line react/display-name
@@ -22,14 +22,13 @@ export default ({
     <div className="backdrop-blur-3xl bg-white/5 p-4 rounded shadow w-3/5 h-5/6 flex flex-col relative">
       <div className="flex justify-center -mt-12">
         <img
-          // src={`data:image/png;base64,${user?.avatar}`}
           src={
             user?.image
               ? user.image
               : `https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg`
           }
           alt="User avatar"
-          className="w-24 h-24 rounded-full mb-4 content-center shadow-md"
+          className="w-24 h-24 rounded-full mb-4 content-center shadow-md object-center relative"
         />
       </div>
       <div className="text-center mt-2 mb-5 justify-center">
@@ -57,40 +56,22 @@ export default ({
           {user?.gender}
         </h1>
       </div>
-
-      {/*
-            <div className="text-gray-600 justify-between text-lg ">
-              <p>
-                <span className="font-medium">Username:</span> {user?.username}
-              </p>
-              <p>
-                <span className="font-medium">Phone: </span> {user?.phone}
-              </p>
-              <p>
-                <span className="font-medium">Birthday: </span> {user?.birthday}
-              </p>
-              <p>
-                <span className="font-medium">Address: </span> {user?.address}
-              </p>
-            </div>
-            */}
       <div className="mt-auto flex justify-center">
-        {/* <Button
-          className="text-white rounded w-1/3 content-center"
-          onClick={async () => {
-            await getSession();
-          }}
+        <ButtonGroup
+          className="rounded w-1/3 content-center"
           placeholder={null}
         >
-          FETCH LẠI
-        </Button> */}
-        <Button
-          className="text-white rounded w-1/3 content-center"
-          onClick={handleEditClick}
-          placeholder={null}
-        >
-          Edit
-        </Button>
+          <Button
+            className="text-white w-1/2 "
+            onClick={handleEditClick}
+            placeholder={null}
+          >
+            Edit
+          </Button>
+          <Button className="w-1/2" placeholder={null}>
+            Change Password
+          </Button>
+        </ButtonGroup>
       </div>
     </div>
   );

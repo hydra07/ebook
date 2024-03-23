@@ -31,3 +31,22 @@ body {
     text-wrap: balance;
   }
 }
+
+.progress-bar {
+  width: 50%;
+  height: 10px;
+  border-radius: 20px;
+  /* background: #f3f3f3; */
+}
+.progress-bar::-webkit-progress-bar {
+  border-radius: 10px;
+  background: #f3f3f3;
+}
+.progress-bar::-webkit-progress-value {
+  border-radius: 10px;
+  background: #650183;
+}
+.progress-bar::-moz-progress-bar {
+  border-radius: 10px;
+  background: #650183;
+}

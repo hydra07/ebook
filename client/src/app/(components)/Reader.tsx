@@ -54,9 +54,9 @@ export default () => {
    */
   const handleOnSelection = useCallback(
     (cfiRange: string, contents: Contents) => {
-      // viewRef.current!.onHighlight(cfiRange, (e) => {
-      //   console.log('highlight', e);
-      // });
+      viewRef.current!.onHighlight(cfiRange, (e: any) => {
+        console.log('highlight', e);
+      });
     },
     [viewRef],
   );

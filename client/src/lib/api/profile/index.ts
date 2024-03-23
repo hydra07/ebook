@@ -15,6 +15,7 @@ async function editProfile(token: string, user: User): Promise<User> {
   // console.log('token', token);
   console.log('user', JSON.parse(JSON.stringify(user)));
   const res = await axiosWithAuth(token).post('/user/profile', user);
+  console.log('res', JSON.stringify(res));
   console.log('res', res.data);
   return res.data as User;
 }

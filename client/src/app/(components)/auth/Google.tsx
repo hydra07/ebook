@@ -2,21 +2,10 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 // eslint-disable-next-line react/display-name,import/no-anonymous-default-export
 export default () => {
-  // const dispatch = useDispatch();
   const handleGoogleClick = async () => {
     try {
-      // const provider = new GoogleAuthProvider();
-      // const auth = getAuth(app);
-      // const result = await signInWithPopup(auth, provider);
-      // const data = {
-      //   name: result.user.displayName,
-      //   email: result.user.email,
-      //   phone: result.user.phoneNumber,
-      //   avatar: result.user.photoURL,
-      // };
-      // dispatch(google(data));
       await signIn('google', {
-        callbackUrl: '/profile',
+        callbackUrl: '/',
       });
     } catch (error) {
       console.log(error);
