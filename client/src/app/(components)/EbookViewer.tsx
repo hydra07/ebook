@@ -2,46 +2,35 @@ import useBookController from '@/lib/hooks/ebook/useBookController';
 import useBookStyle from '@/lib/hooks/ebook/useBookStyle';
 import useBookmark from '@/lib/hooks/ebook/useBookmark';
 import useDrawer from '@/lib/hooks/ebook/useDrawer';
+import useSelection from '@/lib/hooks/ebook/useSelection';
 import ReactViewer from '@/lib/modules/ReactViewer/ReactViewer';
 import Book from '@/types/book';
 import { ViewerRef } from '@/types/ebook';
-import { Contents } from 'epubjs';
-import { useCallback, useRef, useState } from 'react';
+import { useRef } from 'react';
 import Loading from './Loading';
 import Footer from './reader/Footer';
 import Header from './reader/Header';
 import RightDrawer from './reader/RightDrawer';
 import TableOfContent from './reader/TableOfContent';
 
-function getTheme(): string {
-  return '/themes/dark.theme.css';
-}
-
 export default ({ book }: { book: Book }) => {
   const viewerRef = useRef<ViewerRef>(null);
-  const [url, setUrl] = useState<string>(
-    // 'Kiếm Lai - Phong Hoả Hí Chư Hầu.epub',
-    // 'Cú Sốc Tương Lai - Alvin Toffler.epub',
-    book.url,
-  );
   const {
     isLeftDrawer,
     isFirstRightDrawerOpen,
     isSecondRightDrawerOpen,
+    isThirdRightDrawerOpen,
+    setThirdRightDrawerOpen,
     toggleLeftDrawer,
     toggleFirstRightDrawer,
     toggleSecondRightDrawer,
+    toggleThirdRightDrawer,
   } = useDrawer();
-  const {
-    theme,
-    bookStyle,
-    bookOption,
-    viewerLayout,
-    styleItem,
-  } = useBookStyle({ viewerRef });
+  const { theme, isDarkMode, bookStyle, bookOption, viewerLayout, styleItem } =
+    useBookStyle({ viewerRef });
 
   const {
-    currentLocation,
+    // currentLocation,
     onPageMove,
     onPageChange,
     onBookChangeInfor,
@@ -54,25 +43,30 @@ export default ({ book }: { book: Book }) => {
     onTonggle: toggleFirstRightDrawer,
   });
 
+  const { onSelection, contextItem } = useSelection({
+    viewerRef,
+    onOpen: toggleThirdRightDrawer,
+  });
   // const { onSelection } = useContextMenu({ viewerRef });
-  const onSelection = useCallback(
-    (cfiRange: string, contents: Contents) => {
-      console.log('onSelection', contents.content);
-    },
-    [viewerRef],
-  );
 
   return (
-    <div className="w-screen h-screen overflow-hidden">
+    <div
+      className="w-screen h-screen overflow-hidden "
+      style={{
+        backgroundColor: isDarkMode ? '#000' : '#fff',
+        // color: isDarkMode ? '#fff' : '#000',
+      }}
+    >
       <Header
         onNavToggle={toggleLeftDrawer}
         height={viewerLayout.VIEWER_HEADER_HEIGHT}
         onBookmarkToggle={toggleFirstRightDrawer}
         onStyleToggle={toggleSecondRightDrawer}
         bookmarkButton={bookmarkButton()}
+        onSelectToggle={toggleThirdRightDrawer}
       />
       <ReactViewer
-        url={url}
+        url={book.url}
         viewerStyleURL={theme}
         viewerLayout={viewerLayout}
         viewerStyle={bookStyle}
@@ -85,9 +79,6 @@ export default ({ book }: { book: Book }) => {
         ref={viewerRef}
       />
       <Footer
-        title={currentLocation.chapterName}
-        currentPage={currentLocation.currentPage}
-        totalPage={currentLocation.totalPage}
         onPageMove={onPageMove}
         height={viewerLayout.VIEWER_FOOTER_HEIGHT}
       />
@@ -105,6 +96,11 @@ export default ({ book }: { book: Book }) => {
         isToggle={isSecondRightDrawerOpen}
         onToggle={toggleSecondRightDrawer}
         children={styleItem()}
+      />
+      <RightDrawer
+        isToggle={isThirdRightDrawerOpen}
+        onToggle={toggleThirdRightDrawer}
+        children={contextItem()}
       />
     </div>
   );

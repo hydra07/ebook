@@ -11,7 +11,7 @@ type Props = {
   viewerRef: RefObject<ViewerRef> | any;
 };
 type useBookStyle = {
-  currentLocation: any;
+  // currentLocation: any;
   onPageMove: (type: 'prev' | 'next') => void;
   onPageChange: (page: Page) => void;
   onBookChangeInfor: (book: BookType) => void;
@@ -22,7 +22,7 @@ type useBookStyle = {
 };
 export default function useBookController({ viewerRef }: Props): useBookStyle {
   const dispatch: AppDispatch = useDispatch();
-  const currentLocation = useSelector(
+  const currentLocation = useSelector<RootState, Page>(
     (state: RootState) => state.ebook.currentLocation,
   );
   // const bookmarks = useSelector((state: RootState) => state.ebook.bookmarks);
@@ -40,7 +40,7 @@ export default function useBookController({ viewerRef }: Props): useBookStyle {
 
   // Dùng để cập nhật sau khi chuyển trang
   const onPageChange = useCallback(
-    async (page: Page) => {
+    (page: Page) => {
       dispatch(updateCurrentPage(page));
       // const token = `eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhYmN4eXpraG9uZ0BnbWFpbC5jb20iLCJleHAiOjE3MTEwODEwMTN9.0DjJf1T_yrKiyP8MCJBJeidJpX0QA_0oDiV7sB0CZjiUED56V_3BeS5-9J31g6SL4my6JHGPZ-nN9wPukUys9A`;
       // await dispatch(movePageAction(token));
@@ -75,7 +75,7 @@ export default function useBookController({ viewerRef }: Props): useBookStyle {
   );
 
   return {
-    currentLocation,
+    // currentLocation,
     onPageMove,
     onPageChange,
     onBookChangeInfor,

@@ -9,6 +9,7 @@ type HeaderProps = {
   onRemoveBookmark?: () => void;
   bookmarkButton?: JSX.Element;
   onStyleToggle?: () => void;
+  onSelectToggle?: () => void;
 };
 /**
  * @name Header
@@ -24,19 +25,22 @@ export default function Header({
   onRemoveBookmark,
   bookmarkButton,
   onStyleToggle,
+  onSelectToggle,
 }: HeaderProps) {
   return (
     <div
-      className={`w-screen bg-blue-gray-800 flex border-b`}
+      className="w-screen bg-gray-900 flex border-b border-gray-700"
       style={{ height: `${isNotNullOrUndefined(height) ? height : 40}px` }}
     >
-      <div className="flex flex-row w-full justify-between">
-        <div className="px-3 items-center justify-start">
+      <div className="flex flex-row w-full justify-between text-white px-4 py-2">
+        <div className="flex items-center justify-start">
           <button onClick={onNavToggle}>
             <img src="/svg/menu-white.svg" alt="menu" className="w-8 h-8" />
           </button>
         </div>
-        <div className="justify-end pr-2 space-x-2 flex flex-row">
+        <div className="justify-end pr-2 space-x-3 flex flex-row items-center">
+          <button onClick={onSelectToggle} children={`Select`} />
+          {bookmarkButton}
           <button onClick={onBookmarkToggle}>
             <img
               src="/svg/menu-list-white.svg"
@@ -45,11 +49,12 @@ export default function Header({
             />
           </button>
           <button onClick={onStyleToggle}>
-            {/* <img src="/svg/setting-white.svg" alt="menu" className="w-8 h-8" /> */}
-            <span>Setting</span>
+            <img
+              src="/svg/setting-white.svg"
+              alt="setting"
+              className="w-8 h-8"
+            />
           </button>
-          {/* <button onClick={onAddBookmark} children="addBookmark" /> */}
-          {bookmarkButton}
         </div>
       </div>
     </div>
