@@ -1,4 +1,9 @@
+import useUser from '@/lib/hooks/useUser';
+import { AppDispatch, RootState } from '@/lib/store';
+import { Page } from '@/types/ebook';
 import { isNotNullOrUndefined } from '@/utils/common.utils';
+import { useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 type HeaderProps = {
   // onThemeChange: () => void;
@@ -10,7 +15,9 @@ type HeaderProps = {
   bookmarkButton?: JSX.Element;
   onStyleToggle?: () => void;
   onSelectToggle?: () => void;
+  onLocationChange: (loc: string) => void;
 };
+
 /**
  * @name Header
  * @description EbookViewer Header
@@ -26,7 +33,25 @@ export default function Header({
   bookmarkButton,
   onStyleToggle,
   onSelectToggle,
+  onLocationChange,
 }: HeaderProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const { user, status } = useUser();
+  const currentLocation = useSelector<RootState, Page>(
+    (state: RootState) => state.ebook.currentLocation,
+  );
+
+  const tieptuc = useCallback(
+    (locCurrent: string) => {
+      onLocationChange(locCurrent);
+    },
+    [onLocationChange],
+  );
+  // useEffect(() => {
+  //   const token = user?.accessToken;
+  //   token && dispatch(initBookReader({ token, id: 12 }));
+  //   // console.log(token);
+  // }, [status, user]);
   return (
     <div
       className="w-screen bg-gray-900 flex border-b border-gray-700"
@@ -39,6 +64,13 @@ export default function Header({
           </button>
         </div>
         <div className="justify-end pr-2 space-x-3 flex flex-row items-center">
+          {currentLocation && (
+            <button
+              // onClick={() => tieptuc(`epubcfi(/6/12!/14/12/1:290)`)}
+              onClick={() => tieptuc(currentLocation.startCfi)}
+              children={`Tiep tuc doc`}
+            />
+          )}
           <button onClick={onSelectToggle} children={`Select`} />
           {bookmarkButton}
           <button onClick={onBookmarkToggle}>

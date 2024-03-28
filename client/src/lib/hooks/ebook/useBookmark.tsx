@@ -72,6 +72,7 @@ export default function useBookmark({
     if (currentLocation.startCfi === '') return;
     addBookmark(currentLocation.startCfi);
   }, [currentLocation, bookmarks, addBookmark]);
+  
   const onRemoveBookmark = useCallback(() => {
     removeBookmark(currentLocation.startCfi);
   }, [currentLocation, bookmarks, removeBookmark]);

@@ -1,7 +1,6 @@
 import { RootState } from '@/lib/store';
 import { Page } from '@/types/ebook';
 import { isNotNullOrUndefined } from '@/utils/common.utils';
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 /**
@@ -34,9 +33,9 @@ export default function Footer({ onPageMove, height }: FooterProps) {
   const currentLocation = useSelector<RootState, Page>(
     (state: RootState) => state.ebook.currentLocation,
   );
-  useEffect(() => {
-    console.log('currentLocation', currentLocation);
-  }, [currentLocation]);
+  // useEffect(() => {
+  //   console.log('currentLocation', currentLocation);
+  // }, [currentLocation]);
   return (
     <div
       className="w-screen bg-gray-900 flex justify-between border-t border-gray-700 p-4 overflow-hidden"
